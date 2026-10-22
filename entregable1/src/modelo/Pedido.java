@@ -10,7 +10,7 @@ public  abstract class Pedido {
     private LocalDateTime fechaHora;
     private String estado; // "pendiente", "enviado", "entregado"
 
-    public Pedido(String codigo, String cliente, String destino, double pesoKg, double distanciaKm, LocalDateTime fechaHora, String estado) {
+    public Pedido(String codigo, Cliente cliente, String destino, double pesoKg, double distanciaKm, LocalDateTime fechaHora, String estado) {
         setCodigo(codigo);
         setCliente(cliente);    
         setDestino(destino);
@@ -57,10 +57,10 @@ public  abstract class Pedido {
         }
     }
 
-    public void setCliente(String cliente) {
-        if (cliente != null && !cliente.trim().isEmpty()) {
-            this.cliente = new Cliente(); // Crear un nuevo objeto Cliente
-            this.cliente.setNombre(cliente); // Establecer el nombre del cliente
+    public void setCliente(Cliente cliente) {
+        if (cliente != null ) {
+            this.cliente =  cliente; // Crear un nuevo objeto Cliente
+            
         } else {
             throw new IllegalArgumentException("El cliente no puede estar vacío.");
         }
