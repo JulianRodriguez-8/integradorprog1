@@ -1,23 +1,29 @@
 package modelo;
 import java.time.LocalDateTime;
 
+import excepciones.EstadoInvalidoException;
+
 public  abstract class Pedido {
+    public static final String PENDIENTE = "PENDIENTE";
+    public static final String EN_CAMINO = "EN_CAMINO";
+    public static final String ENTREGADO = "ENTREGADO"; 
+    public static final String CANCELADO = "CANCELADO";
     private String codigo;
     private Cliente cliente;
     private String destino;
     private double pesoKg;
     private double distanciaKm;
     private LocalDateTime fechaHora;
-    private String estado; // "pendiente", "enviado", "entregado"
+    private String estado; 
 
-    public Pedido(String codigo, Cliente cliente, String destino, double pesoKg, double distanciaKm, LocalDateTime fechaHora, String estado) {
+    public Pedido(String codigo, Cliente cliente, String destino, double pesoKg, double distanciaKm, LocalDateTime fechaHora) {
         setCodigo(codigo);
         setCliente(cliente);    
         setDestino(destino);
         setPesoKg(pesoKg);
         setDistanciaKm(distanciaKm);
         setFechaHora(fechaHora);
-        setEstado(estado);
+        
     }
 
     public String getCodigo() {
@@ -98,20 +104,19 @@ public  abstract class Pedido {
         }
     }
 
-    public void setEstado(String estado) {
-        if (estado != null && !estado.trim().isEmpty()) {
-            this.estado = estado;
-        } else {
-            throw new IllegalArgumentException("El estado no puede estar vacío.");
-        }
-    }
+    
 
     public abstract double calcularCosto(Vehiculo vehiculo);
 
-    public double cambiarEstado(String nuevoEstado) {
+   public void cambiarEstado(String nuevoEstado) {
+    if (estado.equals(PENDIENTE) && (nuevoEstado.equals(EN_CAMINO) || nuevoEstado.equals(CANCELADO))) {
         this.estado = nuevoEstado;
-        return 0; 
+    } else if (estado.equals(EN_CAMINO) && (nuevoEstado.equals(ENTREGADO) || nuevoEstado.equals(CANCELADO))) {
+        this.estado = nuevoEstado;
+    } else {
+        throw new EstadoInvalidoException("Transición inválida: " + estado + " -> " + nuevoEstado);
     }
+}
 
 
  
