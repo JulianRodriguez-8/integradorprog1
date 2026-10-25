@@ -2,6 +2,7 @@ package modelo;
 import java.time.LocalDateTime;
 
 import excepciones.EstadoInvalidoException;
+import excepciones.PedidoInvalidoException;
 
 public  abstract class Pedido {
     public static final String PENDIENTE = "PENDIENTE";
@@ -16,14 +17,14 @@ public  abstract class Pedido {
     private LocalDateTime fechaHora;
     private String estado; 
 
-    public Pedido(String codigo, Cliente cliente, String destino, double pesoKg, double distanciaKm, LocalDateTime fechaHora) {
+    public Pedido(String codigo, Cliente cliente, String destino, double pesoKg, double distanciaKm, LocalDateTime fechaHora) throws PedidoInvalidoException {
         setCodigo(codigo);
         setCliente(cliente);    
         setDestino(destino);
         setPesoKg(pesoKg);
         setDistanciaKm(distanciaKm);
         setFechaHora(fechaHora);
-        
+        this.estado = PENDIENTE;
     }
 
     public String getCodigo() {
@@ -65,34 +66,34 @@ public  abstract class Pedido {
 
     public void setCliente(Cliente cliente) {
         if (cliente != null ) {
-            this.cliente =  cliente; // Crear un nuevo objeto Cliente
+            this.cliente =  cliente; 
             
         } else {
             throw new IllegalArgumentException("El cliente no puede estar vacío.");
         }
     }
 
-    public void setDestino(String destino) {
+    public void setDestino(String destino)throws PedidoInvalidoException {
         if (destino != null && !destino.trim().isEmpty()) {
             this.destino = destino;
         } else {
-            throw new IllegalArgumentException("El destino no puede estar vacío.");
+            throw new PedidoInvalidoException("El destino no puede estar vacío.");
         }
     }
 
-    public void setPesoKg(double pesoKg) {
+    public void setPesoKg(double pesoKg) throws PedidoInvalidoException {
         if (pesoKg > 0) {
             this.pesoKg = pesoKg;
         } else {
-            throw new IllegalArgumentException("El peso debe ser un valor positivo.");
+            throw new PedidoInvalidoException("El peso debe ser un valor positivo.");
         }
     }
 
-    public void setDistanciaKm(double distanciaKm) {
+    public void setDistanciaKm(double distanciaKm) throws PedidoInvalidoException {
         if (distanciaKm > 0) {
             this.distanciaKm = distanciaKm;
         } else {
-            throw new IllegalArgumentException("La distancia debe ser un valor positivo.");
+            throw new PedidoInvalidoException("La distancia debe ser un valor positivo.");
         }
     }
 
@@ -111,7 +112,7 @@ public  abstract class Pedido {
    public void cambiarEstado(String nuevoEstado) {
     if (estado.equals(PENDIENTE) && (nuevoEstado.equals(EN_CAMINO) || nuevoEstado.equals(CANCELADO))) {
         this.estado = nuevoEstado;
-    } else if (estado.equals(EN_CAMINO) && (nuevoEstado.equals(ENTREGADO) || nuevoEstado.equals(CANCELADO))) {
+    } else if (estado.equals(EN_CAMINO) && (nuevoEstado.equals(ENTREGADO))) {
         this.estado = nuevoEstado;
     } else {
         throw new EstadoInvalidoException("Transición inválida: " + estado + " -> " + nuevoEstado);
