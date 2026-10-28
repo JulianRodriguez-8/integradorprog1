@@ -9,7 +9,7 @@ public class PedidoNormal extends Pedido {
     }
     
     @Override 
-    pubic calcularCosto (Vehiculo vehiculo) {
-        
+    public double calcularCosto (Vehiculo vehiculo) {
+        return COSTO_BASE+ vehiculo.getCostoPorKm() * getDistanciaKm();
     }
 }
