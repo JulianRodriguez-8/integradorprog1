@@ -9,6 +9,7 @@ public  abstract class Pedido {
     public static final String EN_CAMINO = "EN_CAMINO";
     public static final String ENTREGADO = "ENTREGADO"; 
     public static final String CANCELADO = "CANCELADO";
+    public static final double COSTO_BASE = 1000;
     private String codigo;
     private Cliente cliente;
     private String destino;
