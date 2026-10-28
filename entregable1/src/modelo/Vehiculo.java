@@ -65,7 +65,7 @@ public abstract class Vehiculo {
   public abstract double calcularTiempoEntrega(double km);
 
   public boolean puedeTransportar(Pedido pedido) {
-    
+    return pedido.getPesoKg() <= capacidadKg;
 
   }
   

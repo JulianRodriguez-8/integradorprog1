@@ -1,3 +1,4 @@
+package modelo;
 public class Repartidor {
     private String legajo;
     private String nombre;
