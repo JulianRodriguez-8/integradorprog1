@@ -120,7 +120,7 @@ public  abstract class Pedido {
     }
 }
 
+public boolean esFragil() {
+    return false;
 
- 
-    
 }

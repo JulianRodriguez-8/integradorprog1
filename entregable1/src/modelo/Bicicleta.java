@@ -14,6 +14,12 @@ public class Bicicleta extends Vehiculo {
         
     }
 
+    @Override 
+    public boolean puedeTransportar(Pedido pedido) {
+        return !pedido.esFragil() && super.puedeTransportar(pedido);
+    }
+    
+
   
 
    

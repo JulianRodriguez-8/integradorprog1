@@ -10,5 +10,10 @@ public class PedidoFragil extends Pedido {
     public double calcularCosto(Vehiculo vehiculo) {
         return COSTO_BASE + vehiculo.getCostoPorKm() * getDistanciaKm() +800;
     }
+
+    @Override
+    public boolean esFragil() {
+        return true;
+    }
     
 }
