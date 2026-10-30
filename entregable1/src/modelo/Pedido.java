@@ -126,6 +126,6 @@ public abstract class Pedido implements Rastreable {
 
     @Override
     public String obtenerEstadoActual() {
-        return estado //falta algo
+        return  "pedido: " + codigo + ", estado: " + estado;
     }
 }
