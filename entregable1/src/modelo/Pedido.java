@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import excepciones.EstadoInvalidoException;
 import excepciones.PedidoInvalidoException;
 
-public abstract class Pedido {
+public abstract class Pedido implements Rastreable {
     public static final String PENDIENTE = "PENDIENTE";
     public static final String EN_CAMINO = "EN_CAMINO";
     public static final String ENTREGADO = "ENTREGADO";
@@ -122,5 +122,10 @@ public abstract class Pedido {
     public boolean esFragil() {
         return false;
 
+    }
+
+    @Override
+    public String obtenerEstadoActual() {
+        return estado //falta algo
     }
 }
