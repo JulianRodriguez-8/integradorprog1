@@ -23,9 +23,9 @@ public class Main {
         // 2. Vehículos (polimorfismo)
         System.out.println("\n=== Tiempo de entrega (10 km) ===");
         Vehiculo[] vehiculos = {
-            new Bicicleta("BIC-1"),
-            new Moto("MOT-1"),
-            new Camioneta("CAM-1")
+                new Bicicleta("BIC-1"),
+                new Moto("MOT-1"),
+                new Camioneta("CAM-1")
         };
         for (Vehiculo v : vehiculos) {
             System.out.println(v.getClass().getSimpleName() + ": "
@@ -45,7 +45,7 @@ public class Main {
             System.out.println("Pasó a: " + pedido.getEstado());
 
             try {
-                pedido.cambiarEstado(Pedido.PENDIENTE);   // inválido
+                pedido.cambiarEstado(Pedido.PENDIENTE); // inválido
             } catch (EstadoInvalidoException e) {
                 System.out.println("Error esperado: " + e.getMessage());
             }
@@ -61,9 +61,9 @@ public class Main {
         System.out.println("\n=== Costo de los tres tipos (moto, 10 km) ===");
         try {
             Pedido[] pedidos = {
-                new PedidoNormal("P-10", cliente, "Norte", 5, 10, LocalDateTime.now()),
-                new PedidoUrgente("P-11", cliente, "Sur", 5, 10, LocalDateTime.now()),
-                new PedidoFragil("P-12", cliente, "Este", 5, 10, LocalDateTime.now())
+                    new PedidoNormal("P-10", cliente, "Norte", 5, 10, LocalDateTime.now()),
+                    new PedidoUrgente("P-11", cliente, "Sur", 5, 10, LocalDateTime.now()),
+                    new PedidoFragil("P-12", cliente, "Este", 5, 10, LocalDateTime.now())
             };
             Vehiculo moto = new Moto("MOT-2");
 
@@ -77,7 +77,14 @@ public class Main {
         // 5. Pedido inválido
         System.out.println("\n=== Pedido inválido ===");
         try {
-            new PedidoNormal("P-2", cliente, "Sur", -3, 10, LocalDateTime.now());
+            Vehiculo bici = new Bicicleta("BIC-9");
+            Pedido normal = new PedidoNormal("T-1", cliente, "Norte", 5, 10, LocalDateTime.now());
+            Pedido fragil = new PedidoFragil("T-2", cliente, "Sur", 5, 10, LocalDateTime.now());
+            Pedido pesado = new PedidoNormal("T-3", cliente, "Este", 15, 10, LocalDateTime.now());
+
+            System.out.println(bici.puedeTransportar(normal)); // true
+            System.out.println(bici.puedeTransportar(fragil)); // false: es frágil
+            System.out.println(bici.puedeTransportar(pesado)); // false: 15 kg > 10 kgnow());
         } catch (PedidoInvalidoException e) {
             System.out.println("Error esperado: " + e.getMessage());
         }
