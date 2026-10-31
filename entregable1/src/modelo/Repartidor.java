@@ -3,7 +3,7 @@ package modelo;
 import excepciones.CapacidadExcedidaException;
 import excepciones.AlmacenamientoLlenoException;
 
-public class Repartidor {
+public class Repartidor implements Rastreable, Facturable {
     public static final int MAX_PEDIDOS = 20;
     private String legajo;
     private String nombre;
@@ -76,10 +76,10 @@ public class Repartidor {
         pedido.setVehiculoAsignado(vehiculo);
     }
 
-    public void registrarEntrega (Pedido pedido) {
+    public void registrarEntrega(Pedido pedido) {
         boolean encontrado = false;
         for (int i = 0; i < cantidadPedidos; i++) {
-            if (pedidosAsignados[i]==(pedido)) {
+            if (pedidosAsignados[i] == (pedido)) {
                 encontrado = true;
             }
         }
@@ -87,6 +87,22 @@ public class Repartidor {
             throw new IllegalArgumentException("El pedido no está asignado a este repartidor.");
         }
         pedido.cambiarEstado(Pedido.ENTREGADO);
+    }
+
+    @Override
+    public String obtenerEstadoActual() {
+        return "Repartidor " + legajo + " (" + nombre + "): " + cantidadPedidos + " pedidos asignados";
+    }
+
+    @Override
+    public double calcularImporte() {
+        double total = 0;
+        for (int i = 0; i < cantidadPedidos; i++) {
+            if (pedidosAsignados[i].getEstado().equals(Pedido.ENTREGADO)) {
+                total = total + pedidosAsignados[i].calcularImporte();
+            }
+        }
+        return total * 0.1;
     }
 
 }

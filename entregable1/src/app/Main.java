@@ -88,26 +88,33 @@ public class Main {
             System.out.println("Error esperado: " + e.getMessage());
         }
 
-                // 6. Repartidor y sobrecarga de asignarPedido
+        // 6. Repartidor y sobrecarga de asignarPedido
         System.out.println("\n=== Repartidor ===");
         try {
-            Repartidor rep = new Repartidor("L-2", "Marta", new Moto("MOT-7"));
-            Pedido p = new PedidoNormal("E-1", cliente, "Norte", 5, 10, LocalDateTime.now());
-            Pedido q = new PedidoNormal("E-2", cliente, "Sur", 5, 10, LocalDateTime.now());
+            Repartidor rep = new Repartidor("L-4", "Sara", new Moto("MOT-11"));
+            Pedido p1 = new PedidoNormal("C-1", cliente, "Norte", 5, 10, LocalDateTime.now());
+            Pedido p2 = new PedidoUrgente("C-2", cliente, "Sur", 5, 10, LocalDateTime.now());
 
-            rep.asignarPedido(p);                             // usa la moto
-            rep.asignarPedido(q, new Camioneta("CAM-8"));     // usa la camioneta
+            rep.asignarPedido(p1);
+            rep.asignarPedido(p2);
+            System.out.println(rep.calcularImporte()); // 0.0: todavía no entregó nada
 
-            System.out.println("Pedidos asignados: " + rep.getCantidadPedidos());
-            System.out.println(p.calcularImporte());          // 2200.0
-            System.out.println(q.calcularImporte());          // 4000.0
+            p1.cambiarEstado(Pedido.EN_CAMINO);
+            rep.registrarEntrega(p1);
+            System.out.println(rep.calcularImporte()); // 220.0
+
+            p2.cambiarEstado(Pedido.EN_CAMINO);
+            rep.registrarEntrega(p2);
+            System.out.println(rep.calcularImporte()); // 550.0
+            System.out.println(rep.obtenerEstadoActual());
         } catch (CapacidadExcedidaException e) {
             System.out.println("Capacidad excedida: " + e.getMessage());
         } catch (AlmacenamientoLlenoException e) {
             System.out.println("Almacenamiento lleno: " + e.getMessage());
         } catch (PedidoInvalidoException e) {
             System.out.println("Pedido inválido: " + e.getMessage());
+
         }
     }
-    
+
 }
