@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import excepciones.EstadoInvalidoException;
 import excepciones.PedidoInvalidoException;
 
-public abstract class Pedido implements Rastreable {
+public abstract class Pedido implements Rastreable, Facturable {
     public static final String PENDIENTE = "PENDIENTE";
     public static final String EN_CAMINO = "EN_CAMINO";
     public static final String ENTREGADO = "ENTREGADO";
@@ -18,6 +18,7 @@ public abstract class Pedido implements Rastreable {
     private double distanciaKm;
     private LocalDateTime fechaHora;
     private String estado;
+    private Vehiculo vehiculoAsignado;
 
     public Pedido(String codigo, Cliente cliente, String destino, double pesoKg, double distanciaKm,
             LocalDateTime fechaHora) throws PedidoInvalidoException {
@@ -56,6 +57,10 @@ public abstract class Pedido implements Rastreable {
 
     public String getEstado() {
         return estado;
+    }
+
+    public Vehiculo getVehiculoAsignado() {
+        return vehiculoAsignado;
     }
 
     public void setCodigo(String codigo) {
@@ -107,6 +112,10 @@ public abstract class Pedido implements Rastreable {
         }
     }
 
+    public void setVehiculoAsignado(Vehiculo vehiculoAsignado) {
+        this.vehiculoAsignado = vehiculoAsignado;
+    }
+
     public abstract double calcularCosto(Vehiculo vehiculo);
 
     public void cambiarEstado(String nuevoEstado) {
@@ -126,6 +135,15 @@ public abstract class Pedido implements Rastreable {
 
     @Override
     public String obtenerEstadoActual() {
-        return  "pedido: " + codigo + ", estado: " + estado;
+        return "pedido: " + codigo + ", estado: " + estado;
+    }
+
+    @Override
+    public double calcularImporte() {
+        if (vehiculoAsignado == null) {
+            return 0;
+        } else {
+            return calcularCosto(vehiculoAsignado);
+        }
     }
 }

@@ -77,14 +77,11 @@ public class Main {
         // 5. Pedido inválido
         System.out.println("\n=== Pedido inválido ===");
         try {
-            Vehiculo bici = new Bicicleta("BIC-9");
-            Pedido normal = new PedidoNormal("T-1", cliente, "Norte", 5, 10, LocalDateTime.now());
-            Pedido fragil = new PedidoFragil("T-2", cliente, "Sur", 5, 10, LocalDateTime.now());
-            Pedido pesado = new PedidoNormal("T-3", cliente, "Este", 15, 10, LocalDateTime.now());
-
-            System.out.println(bici.puedeTransportar(normal)); // true
-            System.out.println(bici.puedeTransportar(fragil)); // false: es frágil
-            System.out.println(bici.puedeTransportar(pesado)); // false: 15 kg > 10 kgnow());
+            Pedido p = new PedidoUrgente("F-1", cliente, "Sur", 5, 10, LocalDateTime.now());
+            System.out.println(p.calcularImporte()); // 0.0
+            p.setVehiculoAsignado(new Moto("MOT-3"));
+            System.out.println(p.calcularImporte()); // 3300.0
+            System.out.println(p.obtenerEstadoActual()); // pedido: F-1, estado: PENDIENTE
         } catch (PedidoInvalidoException e) {
             System.out.println("Error esperado: " + e.getMessage());
         }
