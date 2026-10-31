@@ -1,5 +1,7 @@
 package app;
 
+import excepciones.AlmacenamientoLlenoException;
+import excepciones.CapacidadExcedidaException;
 import excepciones.EstadoInvalidoException;
 import excepciones.PedidoInvalidoException;
 import java.time.LocalDateTime;
@@ -85,5 +87,27 @@ public class Main {
         } catch (PedidoInvalidoException e) {
             System.out.println("Error esperado: " + e.getMessage());
         }
+
+                // 6. Repartidor y sobrecarga de asignarPedido
+        System.out.println("\n=== Repartidor ===");
+        try {
+            Repartidor rep = new Repartidor("L-2", "Marta", new Moto("MOT-7"));
+            Pedido p = new PedidoNormal("E-1", cliente, "Norte", 5, 10, LocalDateTime.now());
+            Pedido q = new PedidoNormal("E-2", cliente, "Sur", 5, 10, LocalDateTime.now());
+
+            rep.asignarPedido(p);                             // usa la moto
+            rep.asignarPedido(q, new Camioneta("CAM-8"));     // usa la camioneta
+
+            System.out.println("Pedidos asignados: " + rep.getCantidadPedidos());
+            System.out.println(p.calcularImporte());          // 2200.0
+            System.out.println(q.calcularImporte());          // 4000.0
+        } catch (CapacidadExcedidaException e) {
+            System.out.println("Capacidad excedida: " + e.getMessage());
+        } catch (AlmacenamientoLlenoException e) {
+            System.out.println("Almacenamiento lleno: " + e.getMessage());
+        } catch (PedidoInvalidoException e) {
+            System.out.println("Pedido inválido: " + e.getMessage());
+        }
     }
+    
 }

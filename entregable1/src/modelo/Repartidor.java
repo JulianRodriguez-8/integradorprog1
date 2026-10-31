@@ -1,7 +1,7 @@
 package modelo;
 
 import excepciones.CapacidadExcedidaException;
-import excepciones.AlmacenamientoLLenoException;
+import excepciones.AlmacenamientoLlenoException;
 
 public class Repartidor {
     public static final int MAX_PEDIDOS = 20;
@@ -59,17 +59,21 @@ public class Repartidor {
         }
     }
 
-    public void asignarPedido(Pedido pedido) throws CapacidadExcedidaException, AlmacenamientoLLenoException {
+    public void asignarPedido(Pedido pedido) throws CapacidadExcedidaException, AlmacenamientoLlenoException {
+        asignarPedido(pedido, vehiculoAsig);
+    }
 
+    public void asignarPedido(Pedido pedido, Vehiculo vehiculo)
+            throws CapacidadExcedidaException, AlmacenamientoLlenoException {
         if (cantidadPedidos >= MAX_PEDIDOS) {
-            throw new AlmacenamientoLLenoException("No se pueden asignar más pedidos. Capacidad máxima alcanzada.");
+            throw new AlmacenamientoLlenoException("No se pueden asignar más pedidos. Capacidad máxima alcanzada.");
         }
-        if (!vehiculoAsig.puedeTransportar(pedido)) {
-            throw new CapacidadExcedidaException("El vehículo asignado no puede transportar el pedido.");
+        if (!vehiculo.puedeTransportar(pedido)) {
+            throw new CapacidadExcedidaException("El vehículo no puede transportar el pedido.");
         }
         pedidosAsignados[cantidadPedidos] = pedido;
         cantidadPedidos++;
+        pedido.setVehiculoAsignado(vehiculo);
     }
 
-    
 }
