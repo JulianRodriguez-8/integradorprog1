@@ -76,4 +76,17 @@ public class Repartidor {
         pedido.setVehiculoAsignado(vehiculo);
     }
 
+    public void registrarEntrega (Pedido pedido) {
+        boolean encontrado = false;
+        for (int i = 0; i < cantidadPedidos; i++) {
+            if (pedidosAsignados[i]==(pedido)) {
+                encontrado = true;
+            }
+        }
+        if (!encontrado) {
+            throw new IllegalArgumentException("El pedido no está asignado a este repartidor.");
+        }
+        pedido.cambiarEstado(Pedido.ENTREGADO);
+    }
+
 }
