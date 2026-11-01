@@ -4,6 +4,7 @@ import excepciones.AlmacenamientoLlenoException;
 import excepciones.CapacidadExcedidaException;
 import excepciones.EstadoInvalidoException;
 import excepciones.PedidoInvalidoException;
+import excepciones.ClienteNoEncontradoException;
 import java.time.LocalDateTime;
 import modelo.*;
 
@@ -76,16 +77,20 @@ public class Main {
             System.out.println("No se pudieron crear los pedidos: " + e.getMessage());
         }
 
-        // 5. Pedido inválido
-        System.out.println("\n=== Pedido inválido ===");
+                // 5. Gestor: clientes y búsquedas
+        System.out.println("\n=== Gestor CityLink ===");
         try {
-            Pedido p = new PedidoUrgente("F-1", cliente, "Sur", 5, 10, LocalDateTime.now());
-            System.out.println(p.calcularImporte()); // 0.0
-            p.setVehiculoAsignado(new Moto("MOT-3"));
-            System.out.println(p.calcularImporte()); // 3300.0
-            System.out.println(p.obtenerEstadoActual()); // pedido: F-1, estado: PENDIENTE
-        } catch (PedidoInvalidoException e) {
+            CityLink gestor = new CityLink();
+            gestor.registrarCliente(new Cliente(1, "Ana", "2657-111111", "Centro"));
+            gestor.registrarCliente(new Cliente(2, "Luis", "2657-222222", "Norte"));
+
+            System.out.println(gestor.buscarCliente(2));       // Cliente #2 - Luis - ...
+            System.out.println(gestor.buscarCliente("ana"));   // Cliente #1 - Ana - ...
+            gestor.buscarCliente(99);                          // lanza ClienteNoEncontradoException
+        } catch (ClienteNoEncontradoException e) {
             System.out.println("Error esperado: " + e.getMessage());
+        } catch (AlmacenamientoLlenoException e) {
+            System.out.println("Almacenamiento lleno: " + e.getMessage());
         }
 
         // 6. Repartidor y sobrecarga de asignarPedido
