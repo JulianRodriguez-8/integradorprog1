@@ -140,4 +140,24 @@ public class CityLink {
         return resultado;
     }
 
+    public void cambiarEstadoPedido(String codigoPedido, String nuevoEstado) {
+        Pedido pedido = buscarPedido(codigoPedido);
+        if (!nuevoEstado.equals(Pedido.CANCELADO) && pedido.getVehiculoAsignado() == null) {
+            throw new IllegalArgumentException("El pedido " + codigoPedido + " no tiene repartidor asignado.");
+        }
+        pedido.cambiarEstado(nuevoEstado);
+    }
+
+    public String consultarEstadoPedido(String codigoPedido) {
+        Rastreable r = buscarPedido(codigoPedido);
+        return r.obtenerEstadoActual();
+    }
+
+    public String consultarEstadoRepartidor(String legajo) {
+        Rastreable r = buscarRepartidor(legajo);
+        return r.obtenerEstadoActual();
+    }
+
+
+
 }
