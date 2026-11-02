@@ -80,26 +80,33 @@ public class Main {
         // 5. Gestor: clientes y búsquedas
         System.out.println("\n=== Gestor CityLink ===");
         try {
-            CityLink gestor = new CityLink();
-            Cliente ana = new Cliente(1, "Ana", "2657-111111", "Centro");
-            gestor.registrarCliente(ana);
+           CityLink gestor = new CityLink();
+Cliente ana = new Cliente(1, "Ana", "2657-111111", "Centro");
+gestor.registrarCliente(ana);
+gestor.registrarRepartidor(new Repartidor("L-1", "Carlos", new Moto("MOT-1")));
+gestor.registrarPedido(new PedidoNormal("M-1", ana, "Norte", 5, 10, LocalDateTime.now()));
+gestor.registrarPedido(new PedidoUrgente("M-2", ana, "Sur", 5, 10, LocalDateTime.now()));
 
-            Pedido p1 = new PedidoNormal("G-1", ana, "Norte", 5, 10, LocalDateTime.now());
-            gestor.registrarPedido(p1); // ok
+gestor.asignarPedido("M-1", "L-1");
+gestor.asignarPedido("M-2", "L-1");
 
-            try {
-                gestor.registrarPedido(p1); // código repetido
-            } catch (PedidoInvalidoException e) {
-                System.out.println("Error esperado: " + e.getMessage());
-            }
+System.out.println("Total: " + gestor.calcularImporteTotal());    // 5500.0
+System.out.print(gestor.listarComisiones());                      // Carlos: 0.0 (todavía no entregó nada)
 
-            Cliente fantasma = new Cliente(99, "Nadie", "000", "Sur"); // nunca registrado en el gestor
-            Pedido p2 = new PedidoNormal("G-2", fantasma, "Sur", 5, 10, LocalDateTime.now());
-            gestor.registrarPedido(p2); // lanza ClienteNoEncontradoException
-        } catch (ClienteNoEncontradoException e) {
-            System.out.println("Error esperado: " + e.getMessage());
+Pedido m1 = gestor.buscarPedido("M-1");
+m1.cambiarEstado(Pedido.EN_CAMINO);
+gestor.buscarRepartidor("L-1").registrarEntrega(m1);
+
+System.out.print(gestor.listarComisiones());                      // Carlos: 220.0 (10% de 2200)
+
         } catch (AlmacenamientoLlenoException e) {
             System.out.println("Almacenamiento lleno: " + e.getMessage());
+        } catch (ClienteNoEncontradoException e) {
+            System.out.println("Cliente no encontrado: " + e.getMessage());
+        } catch (PedidoInvalidoException e) {
+            System.out.println("Pedido inválido: " + e.getMessage());
+        } catch (CapacidadExcedidaException e) {
+            System.out.println("Capacidad excedida: " + e.getMessage());
         }
 
         // 6. Repartidor y sobrecarga de asignarPedido
@@ -172,5 +179,7 @@ public class Main {
             System.out.println("Capacidad excedida: " + e.getMessage());
         }
     }
+
+
 
 }

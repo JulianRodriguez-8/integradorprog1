@@ -123,4 +123,21 @@ public class CityLink {
         return resultado;
     }
 
+    public double calcularImporteTotal() {
+        double total = 0;
+        for (int i = 0; i < cantidadPedidos; i++) {
+         total = total + pedidos[i].calcularImporte();
+        }
+        return total;
+    }
+
+    public String listarComisiones() {
+        String resultado = "";
+        for (int i = 0; i < cantidadRepartidores; i++) {
+         resultado = resultado + repartidores[i].getNombre() + " (" + repartidores[i].getLegajo()
+         + "): comisión $" + repartidores[i].calcularImporte() + "\n";
+        }
+        return resultado;
+    }
+
 }
