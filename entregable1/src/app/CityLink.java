@@ -78,4 +78,32 @@ public class CityLink {
         cantidadPedidos++;
     }
 
+    public Pedido buscarPedido(String codigo) {
+        for (int i = 0; i < cantidadPedidos; i++) {
+            if (pedidos[i].getCodigo().equals(codigo)) {
+                return pedidos[i];
+            }
+        }
+        throw new IllegalArgumentException("Pedido con código " + codigo + " no encontrado.");
+    }
+
+    public Repartidor buscarRepartidor(String legajo) {
+        for (int i = 0; i < cantidadRepartidores; i++) {
+            if (repartidores[i].getLegajo().equals(legajo)) {
+                return repartidores[i];
+            }
+        }
+        throw new IllegalArgumentException("Repartidor con legajo " + legajo + " no encontrado.");
+    }
+
+    public void asignarPedido(String codigoPedido, String legajo)
+            throws CapacidadExcedidaException, AlmacenamientoLlenoException {
+        Pedido pedido = buscarPedido(codigoPedido);
+        Repartidor repartidor = buscarRepartidor(legajo);
+        if (pedido.getVehiculoAsignado() != null) {
+            throw new IllegalArgumentException("El pedido " + codigoPedido + " ya está asignado.");
+        }
+        repartidor.asignarPedido(pedido);
+    }
+
 }
