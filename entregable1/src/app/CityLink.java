@@ -1,6 +1,7 @@
 package app;
 
 import modelo.*;
+import java.time.LocalDateTime;
 import excepciones.*;
 
 public class CityLink {
@@ -174,6 +175,25 @@ public class CityLink {
         clientes[cantidadClientes - 1] = null;
         cantidadClientes--;
 
+    }
+
+    public void cargarDatosPrueba() throws AlmacenamientoLlenoException, ClienteNoEncontradoException,
+            PedidoInvalidoException, CapacidadExcedidaException {
+
+        // 5 clientes
+        registrarCliente(new Cliente(1, "Ana", "2657-111111", "Centro"));
+        // ... 4 más
+
+        // 3 repartidores, uno por tipo de vehículo
+        registrarRepartidor(new Repartidor("L-1", "Carlos", new Bicicleta("BIC-1")));
+        // ... uno con moto y uno con camioneta
+
+        // 8 pedidos: normales, urgentes y frágiles
+        registrarPedido(new PedidoNormal("P-1", buscarCliente(1), "Norte", 3, 4, LocalDateTime.now()));
+        // ... 7 más
+
+        // asignar algunos pedidos
+        asignarPedido("P-1", "L-1");
     }
 
 }
