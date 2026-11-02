@@ -49,4 +49,33 @@ public class CityLink {
         throw new ClienteNoEncontradoException("Cliente con nombre " + nombre + " no encontrado.");
     }
 
+    public void registrarRepartidor(Repartidor repartidor) throws AlmacenamientoLlenoException {
+        if (cantidadRepartidores >= MAX_REPARTIDORES) {
+            throw new AlmacenamientoLlenoException("Se ha alcanzado el límite máximo de repartidores.");
+        }
+        for (int i = 0; i < cantidadRepartidores; i++) {
+            if (repartidores[i].getLegajo().equals(repartidor.getLegajo())) {
+                throw new IllegalArgumentException(
+                        "Ya existe un repartidor con legajo " + repartidor.getLegajo() + ".");
+            }
+        }
+        repartidores[cantidadRepartidores] = repartidor;
+        cantidadRepartidores++;
+    }
+
+    public void registrarPedido(Pedido pedido)
+            throws PedidoInvalidoException, ClienteNoEncontradoException, AlmacenamientoLlenoException {
+        if (cantidadPedidos >= MAX_PEDIDOS) {
+            throw new AlmacenamientoLlenoException("Se ha alcanzado el límite máximo de pedidos.");
+        }
+        buscarCliente(pedido.getCliente().getCodigo());
+        for (int i = 0; i < cantidadPedidos; i++) {
+            if (pedidos[i].getCodigo().equals(pedido.getCodigo())) {
+                throw new PedidoInvalidoException("Ya existe un pedido con código " + pedido.getCodigo() + ".");
+            }
+        }
+        pedidos[cantidadPedidos] = pedido;
+        cantidadPedidos++;
+    }
+
 }

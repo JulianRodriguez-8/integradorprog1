@@ -10,7 +10,7 @@ import modelo.*;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws PedidoInvalidoException {
 
         // 1. Cliente
         System.out.println("=== Cliente ===");
@@ -77,16 +77,25 @@ public class Main {
             System.out.println("No se pudieron crear los pedidos: " + e.getMessage());
         }
 
-                // 5. Gestor: clientes y búsquedas
+        // 5. Gestor: clientes y búsquedas
         System.out.println("\n=== Gestor CityLink ===");
         try {
             CityLink gestor = new CityLink();
-            gestor.registrarCliente(new Cliente(1, "Ana", "2657-111111", "Centro"));
-            gestor.registrarCliente(new Cliente(2, "Luis", "2657-222222", "Norte"));
+            Cliente ana = new Cliente(1, "Ana", "2657-111111", "Centro");
+            gestor.registrarCliente(ana);
 
-            System.out.println(gestor.buscarCliente(2));       // Cliente #2 - Luis - ...
-            System.out.println(gestor.buscarCliente("ana"));   // Cliente #1 - Ana - ...
-            gestor.buscarCliente(99);                          // lanza ClienteNoEncontradoException
+            Pedido p1 = new PedidoNormal("G-1", ana, "Norte", 5, 10, LocalDateTime.now());
+            gestor.registrarPedido(p1); // ok
+
+            try {
+                gestor.registrarPedido(p1); // código repetido
+            } catch (PedidoInvalidoException e) {
+                System.out.println("Error esperado: " + e.getMessage());
+            }
+
+            Cliente fantasma = new Cliente(99, "Nadie", "000", "Sur"); // nunca registrado en el gestor
+            Pedido p2 = new PedidoNormal("G-2", fantasma, "Sur", 5, 10, LocalDateTime.now());
+            gestor.registrarPedido(p2); // lanza ClienteNoEncontradoException
         } catch (ClienteNoEncontradoException e) {
             System.out.println("Error esperado: " + e.getMessage());
         } catch (AlmacenamientoLlenoException e) {
