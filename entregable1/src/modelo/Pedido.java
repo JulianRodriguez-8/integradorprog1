@@ -146,4 +146,11 @@ public abstract class Pedido implements Rastreable, Facturable {
             return calcularCosto(vehiculoAsignado);
         }
     }
+
+  
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " " + codigo + " [" + cliente.getNombre()
+                + " -> " + destino + ", " + pesoKg + " kg, " + distanciaKm + " km, " + estado + "]";
+    }
 }

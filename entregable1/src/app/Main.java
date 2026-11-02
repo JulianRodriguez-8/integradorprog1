@@ -129,6 +129,48 @@ public class Main {
             System.out.println("Pedido inválido: " + e.getMessage());
 
         }
+                // 7. Gestor: asignación y listado de pedidos (polimorfismo)
+        System.out.println("\n=== Listado de pedidos ===");
+        try {
+            CityLink gestor = new CityLink();
+            Cliente ana = new Cliente(1, "Ana", "2657-111111", "Centro");
+            gestor.registrarCliente(ana);
+
+            gestor.registrarRepartidor(new Repartidor("L-1", "Carlos", new Moto("MOT-1")));
+            gestor.registrarRepartidor(new Repartidor("L-2", "Marta", new Bicicleta("BIC-1")));
+
+            gestor.registrarPedido(new PedidoNormal("K-1", ana, "Norte", 5, 10, LocalDateTime.now()));
+            gestor.registrarPedido(new PedidoUrgente("K-2", ana, "Sur", 5, 10, LocalDateTime.now()));
+            gestor.registrarPedido(new PedidoFragil("K-3", ana, "Este", 5, 10, LocalDateTime.now()));
+
+            gestor.asignarPedido("K-1", "L-1");
+            gestor.asignarPedido("K-2", "L-1");
+
+            System.out.println(gestor.listarPedidos());
+
+            // La bicicleta no puede llevar frágiles
+            try {
+                gestor.asignarPedido("K-3", "L-2");
+            } catch (CapacidadExcedidaException e) {
+                System.out.println("Error esperado: " + e.getMessage());
+            }
+
+            // Un pedido ya asignado no se puede asignar de nuevo
+            try {
+                gestor.asignarPedido("K-1", "L-2");
+            } catch (IllegalArgumentException e) {
+                System.out.println("Error esperado: " + e.getMessage());
+            }
+
+        } catch (AlmacenamientoLlenoException e) {
+            System.out.println("Almacenamiento lleno: " + e.getMessage());
+        } catch (ClienteNoEncontradoException e) {
+            System.out.println("Cliente no encontrado: " + e.getMessage());
+        } catch (PedidoInvalidoException e) {
+            System.out.println("Pedido inválido: " + e.getMessage());
+        } catch (CapacidadExcedidaException e) {
+            System.out.println("Capacidad excedida: " + e.getMessage());
+        }
     }
 
 }

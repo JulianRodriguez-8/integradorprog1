@@ -106,4 +106,21 @@ public class CityLink {
         repartidor.asignarPedido(pedido);
     }
 
+    public String listarPedidos() {
+        String resultado = "";
+        for (int i = 0; i < cantidadPedidos; i++) {
+            Pedido p = pedidos[i];
+            Vehiculo v = p.getVehiculoAsignado();
+            resultado = resultado + p;
+            if (v == null) {
+                resultado = resultado + " | sin asignar\n";
+            } else {
+                resultado = resultado + " | costo: $" + p.calcularCosto(v)
+                        + " | tiempo: " + v.calcularTiempoEntrega(p.getDistanciaKm()) + " min\n";
+            }
+
+        }
+        return resultado;
+    }
+
 }
