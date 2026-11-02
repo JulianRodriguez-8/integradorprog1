@@ -171,7 +171,8 @@ public class Main {
             System.out.println("Capacidad excedida: " + e.getMessage());
         }
 
-        // 8. Gestor: importe total, comisiones, cambio de estado y consultas (Rastreable)
+        // 8. Gestor: importe total, comisiones, cambio de estado y consultas
+        // (Rastreable)
         System.out.println("\n=== Estados, importes y comisiones ===");
         try {
             CityLink gestor = new CityLink();
@@ -184,22 +185,22 @@ public class Main {
             gestor.asignarPedido("N-1", "L-1");
             gestor.asignarPedido("N-2", "L-1");
 
-            System.out.println("Total: " + gestor.calcularImporteTotal());          // 5500.0
-            System.out.print(gestor.listarComisiones());                            // comisión $0.0
+            System.out.println("Total: " + gestor.calcularImporteTotal()); // 5500.0
+            System.out.print(gestor.listarComisiones()); // comisión $0.0
 
-            System.out.println(gestor.consultarEstadoPedido("N-1"));                // PENDIENTE
+            System.out.println(gestor.consultarEstadoPedido("N-1")); // PENDIENTE
             gestor.cambiarEstadoPedido("N-1", Pedido.EN_CAMINO);
-            System.out.println(gestor.consultarEstadoPedido("N-1"));                // EN_CAMINO
+            System.out.println(gestor.consultarEstadoPedido("N-1")); // EN_CAMINO
             System.out.println(gestor.consultarEstadoRepartidor("L-1"));
 
             try {
-                gestor.cambiarEstadoPedido("N-1", Pedido.PENDIENTE);                // transición inválida
+                gestor.cambiarEstadoPedido("N-1", Pedido.PENDIENTE); // transición inválida
             } catch (EstadoInvalidoException e) {
                 System.out.println("Error esperado: " + e.getMessage());
             }
 
             gestor.buscarRepartidor("L-1").registrarEntrega(gestor.buscarPedido("N-1"));
-            System.out.print(gestor.listarComisiones());                            // comisión $220.0
+            System.out.print(gestor.listarComisiones()); // comisión $220.0
 
         } catch (AlmacenamientoLlenoException e) {
             System.out.println("Almacenamiento lleno: " + e.getMessage());
@@ -218,5 +219,30 @@ public class Main {
         } catch (PedidoInvalidoException e) {
             System.out.println("Error esperado: " + e.getMessage());
         }
+
+        // eliminar clientes
+        try {
+            CityLink gestor = new CityLink();
+            gestor.registrarCliente(new Cliente(1, "Ana", "2657-111111", "Centro"));
+            gestor.registrarCliente(new Cliente(2, "Luis", "2657-222222", "Norte"));
+            gestor.registrarCliente(new Cliente(3, "Sara", "2657-333333", "Sur"));
+
+            gestor.eliminarCliente(2); // el del medio
+            System.out.println(gestor.buscarCliente(3)); // Sara sigue estando
+
+            try {
+                gestor.buscarCliente(2); // ya no existe
+            } catch (ClienteNoEncontradoException e) {
+                System.out.println("Error esperado: " + e.getMessage());
+            }
+
+            gestor.eliminarCliente(1); // el primero
+            gestor.eliminarCliente(3); // el último, que ahora es el único
+        } catch (ClienteNoEncontradoException e) {
+            System.out.println("Error: " + e.getMessage());
+        } catch (AlmacenamientoLlenoException e) {
+            System.out.println("Almacenamiento lleno: " + e.getMessage());
+        }
+
     }
 }

@@ -126,7 +126,7 @@ public class CityLink {
     public double calcularImporteTotal() {
         double total = 0;
         for (int i = 0; i < cantidadPedidos; i++) {
-         total = total + pedidos[i].calcularImporte();
+            total = total + pedidos[i].calcularImporte();
         }
         return total;
     }
@@ -134,8 +134,8 @@ public class CityLink {
     public String listarComisiones() {
         String resultado = "";
         for (int i = 0; i < cantidadRepartidores; i++) {
-         resultado = resultado + repartidores[i].getNombre() + " (" + repartidores[i].getLegajo()
-         + "): comisión $" + repartidores[i].calcularImporte() + "\n";
+            resultado = resultado + repartidores[i].getNombre() + " (" + repartidores[i].getLegajo()
+                    + "): comisión $" + repartidores[i].calcularImporte() + "\n";
         }
         return resultado;
     }
@@ -158,6 +158,22 @@ public class CityLink {
         return r.obtenerEstadoActual();
     }
 
+    public void eliminarCliente(int codigo) throws ClienteNoEncontradoException {
+        int posicion = -1;
+        for (int i = 0; i < cantidadClientes; i++) {
+            if (clientes[i].getCodigo() == codigo) {
+                posicion = i;
+            }
+        }
+        if (posicion == -1) {
+            throw new ClienteNoEncontradoException("Cliente con código " + codigo + " no encontrado.");
+        }
+        for (int i = posicion; i < cantidadClientes - 1; i++) {
+            clientes[i] = clientes[i + 1];
+        }
+        clientes[cantidadClientes - 1] = null;
+        cantidadClientes--;
 
+    }
 
 }
