@@ -182,18 +182,38 @@ public class CityLink {
 
         // 5 clientes
         registrarCliente(new Cliente(1, "Ana", "2657-111111", "Centro"));
-        // ... 4 más
+        registrarCliente(new Cliente(2, "Luis", "2657-222222", "Norte"));
+        registrarCliente(new Cliente(3, "Sara", "2657-333333", "Sur"));
+        registrarCliente(new Cliente(4, "Marcos", "2657-444444", "Este"));
+        registrarCliente(new Cliente(5, "Lucía", "2657-555555", "Oeste"));
 
         // 3 repartidores, uno por tipo de vehículo
         registrarRepartidor(new Repartidor("L-1", "Carlos", new Bicicleta("BIC-1")));
-        // ... uno con moto y uno con camioneta
+        registrarRepartidor(new Repartidor("L-2", "Marta", new Moto("MOT-1")));
+        registrarRepartidor(new Repartidor("L-3", "Hugo", new Camioneta("CAM-1")));
 
-        // 8 pedidos: normales, urgentes y frágiles
-        registrarPedido(new PedidoNormal("P-1", buscarCliente(1), "Norte", 3, 4, LocalDateTime.now()));
-        // ... 7 más
+        // 8 pedidos: 3 normales, 2 urgentes... (ver tabla abajo)
+        registrarPedido(new PedidoNormal("P-1", buscarCliente(1), "Barrio Norte", 3, 4, LocalDateTime.now()));
+        registrarPedido(new PedidoNormal("P-2", buscarCliente(2), "Barrio Sur", 8, 6, LocalDateTime.now()));
+        registrarPedido(new PedidoUrgente("P-3", buscarCliente(3), "Zona Este", 5, 10, LocalDateTime.now()));
+        registrarPedido(new PedidoFragil("P-4", buscarCliente(4), "Centro", 12, 8, LocalDateTime.now()));
+        registrarPedido(new PedidoNormal("P-5", buscarCliente(5), "Zona Oeste", 25, 15, LocalDateTime.now()));
+        registrarPedido(new PedidoUrgente("P-6", buscarCliente(1), "Barrio Norte", 200, 12, LocalDateTime.now()));
+        registrarPedido(new PedidoFragil("P-7", buscarCliente(2), "Barrio Sur", 50, 20, LocalDateTime.now()));
+        registrarPedido(new PedidoNormal("P-8", buscarCliente(3), "Centro", 2, 3, LocalDateTime.now()));
 
-        // asignar algunos pedidos
+        // asignar algunos pedidos (P-5 y P-8 quedan sin asignar a propósito)
         asignarPedido("P-1", "L-1");
+        asignarPedido("P-2", "L-1");
+        asignarPedido("P-3", "L-2");
+        asignarPedido("P-4", "L-2");
+        asignarPedido("P-6", "L-3");
+        asignarPedido("P-7", "L-3");
+
+        // un pedido entregado y otro en camino, para que se vea la comisión
+        cambiarEstadoPedido("P-1", Pedido.EN_CAMINO);
+        buscarRepartidor("L-1").registrarEntrega(buscarPedido("P-1"));
+        cambiarEstadoPedido("P-3", Pedido.EN_CAMINO);
     }
 
 }

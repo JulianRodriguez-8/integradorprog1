@@ -11,6 +11,13 @@ public class Menu {
     private CityLink gestor = new CityLink();
 
     public void iniciar() {
+
+        try{
+            gestor.cargarDatosPrueba();
+            System.out.println("Datos de prueba cargados exitosamente.");
+        }catch (AlmacenamientoLlenoException | ClienteNoEncontradoException | PedidoInvalidoException | CapacidadExcedidaException e) {
+            System.out.println("Error al cargar datos de prueba: " + e.getMessage());
+        }
         int opcion = 0;
         
         do {
