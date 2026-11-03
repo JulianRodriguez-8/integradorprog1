@@ -65,19 +65,19 @@ public class Menu {
                 asignarPedido();
                 break;
             case 5:
-
+                cambiarEstadoPedido();
                 break;
             case 6:
-
+                buscarCliente();
                 break;
             case 7:
-
+                listarPedidos();
                 break;
             case 8:
-
+                consultarEstado();
                 break;
             case 9:
-
+                verImportes();
                 break;
             case 10:
                 System.out.println("Hasta luego.");
@@ -140,8 +140,7 @@ public class Menu {
         System.out.println("\n--- Registrar Repartidor ---");
         String legajo = leerTexto("Legajo: ");
         String nombre = leerTexto("Nombre: ");
-        System.out.println("Tipo de vehículo (1. Bicicleta, 2. Moto, 3. Camioneta): ");
-        int tipo = leerEntero("Ingrese el número correspondiente al tipo de vehículo: ");
+        int tipo = leerEntero("Ingrese el número correspondiente al tipo de vehículo: 1. Bicicleta, 2. Moto, 3. Camioneta: ");
         String patente = leerTexto("Patente: ");
 
         Vehiculo vehiculo;
@@ -214,7 +213,7 @@ public class Menu {
     }
 
     //5
-    private void cambiarEstadoPedido() throws PedidoInvalidoException {
+    private void cambiarEstadoPedido() {
         System.out.println("\n--- Cambiar Estado de Pedido ---");
         String codigoPedido = leerTexto("Código del pedido: ");
         int opcion = leerEntero("Nuevo estado (1. En camino, 2. Entregado, 3. Cancelado): ");
@@ -237,26 +236,64 @@ public class Menu {
         System.out.println("Estado del pedido cambiado exitosamente.");
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     //6
+    private void buscarCliente() throws ClienteNoEncontradoException {
+        System.out.println("\n--- Buscar Cliente ---");
+        int forma=leerEntero ("Buscar por (1. Código, 2. Nombre): ");
+        
+        Cliente cliente;
+        switch (forma) {
+            case 1:
+                int codigo = leerEntero("Ingrese el código del cliente: ");
+                cliente = gestor.buscarCliente(codigo);
+                break;
+            case 2:
+                String nombre = leerTexto("Ingrese el nombre del cliente: ");
+                cliente = gestor.buscarCliente(nombre);
+                break;
+            default:
+                throw new IllegalArgumentException("Opción inválida.");
+        }
+        System.out.println("Cliente encontrado: "+cliente.toString());
+    }
+
+
+    //7
+    private void listarPedidos() {
+        System.out.println("\n--- Listado Pedidos ---");
+       String listado = gestor.listarPedidos();
+       if (listado.isEmpty()) {
+            System.out.println("No hay pedidos registrados.");
+        } else {
+            System.out.print(listado);
+        }
+    }
+
+    //8
+    private void consultarEstado() {
+        System.out.println("\n--- Consultar Estado ---");
+        int forma = leerEntero("Consultar estado de (1. Pedido, 2. Repartidor): ");
+       
+        switch (forma) {
+            case 1:
+                String codigo = leerTexto("Ingrese el código del pedido: ");
+                System.out.println(gestor.consultarEstadoPedido(codigo));
+                break;
+            case 2:
+                String legajo = leerTexto("Ingrese el legajo del repartidor: ");
+                System.out.println(gestor.consultarEstadoRepartidor(legajo));
+                break;
+            default:
+                throw new IllegalArgumentException("Opción inválida.");
+        }
+    }
+
+    //9
+    private void verImportes() {
+        System.out.println("\n--- Importes ---");
+        double totalPedidos = gestor.calcularImporteTotal();
+        System.out.println("Importe total de los pedidos: $" + totalPedidos);
+        System.out.println("Comisiones de los repartidores:");
+        System.out.println(gestor.listarComisiones());
+    }
 }
