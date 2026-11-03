@@ -12,6 +12,7 @@ public class Menu {
 
     public void iniciar() {
         int opcion = 0;
+        
         do {
             mostrarMenu();
             opcion = leerEntero("Opción: ");
