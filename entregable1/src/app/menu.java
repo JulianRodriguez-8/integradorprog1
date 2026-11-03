@@ -3,8 +3,9 @@ package app;
 import excepciones.*;
 import java.util.Scanner;
 import modelo.*;
+import java.time.LocalDateTime;
 
-public class menu {
+public class Menu {
 
     private Scanner teclado = new Scanner(System.in);
     private CityLink gestor = new CityLink();
@@ -58,7 +59,7 @@ public class menu {
                 registrarRepartidor();
                 break;
             case 3:
-
+                registrarPedido();
                 break;
             case 4:
                 asignarPedido();
@@ -106,6 +107,21 @@ public class menu {
         return teclado.nextLine().trim();
     }
 
+    private double leerDecimal(String mensaje) {
+        double numero = 0;
+        boolean valido = false;
+        do {
+            System.out.print(mensaje);
+            try {
+                numero = Double.parseDouble(teclado.nextLine().trim().replace(",", "."));
+                valido = true;
+            } catch (NumberFormatException e) {
+                System.out.println("Ingresá un número decimal válido.");
+            }
+        } while (!valido);
+        return numero;
+    }
+
     // 1
     private void registrarCliente() throws AlmacenamientoLlenoException {
         System.out.println("\n--- Registrar Cliente ---");
@@ -140,13 +156,43 @@ public class menu {
                 vehiculo = new Camioneta(patente);
                 break;
             default:
-             throw new IllegalArgumentException("Tipo de vehículo inválido.");
+                throw new IllegalArgumentException("Tipo de vehículo inválido.");
         }
 
         Repartidor repartidor = new Repartidor(legajo, nombre,
                 vehiculo);
         gestor.registrarRepartidor(repartidor);
         System.out.println("Repartidor registrado exitosamente.");
+    }
+
+    // 3
+    private void registrarPedido()
+            throws AlmacenamientoLlenoException, ClienteNoEncontradoException, PedidoInvalidoException {
+        System.out.println("\n--- Registrar Pedido ---");
+        String codigo = leerTexto("Código del pedido: ");
+        int codigoCliente = leerEntero("Código del cliente: ");
+        Cliente cliente = gestor.buscarCliente(codigoCliente);
+        String destino = leerTexto("Destino: ");
+        double pesoKg = leerDecimal("Peso en kg: ");
+        double distanciaKm = leerDecimal("Distancia en km: ");
+        int tipo = leerEntero("Tipo de pedido (1. Normal, 2. Urgente, 3. Frágil): ");
+
+        Pedido pedido;
+        switch (tipo) {
+            case 1:
+                pedido = new PedidoNormal(codigo, cliente, destino, pesoKg, distanciaKm, LocalDateTime.now());
+                break;
+            case 2:
+                pedido = new PedidoUrgente(codigo, cliente, destino, pesoKg, distanciaKm, LocalDateTime.now());
+                break;
+            case 3:
+                pedido = new PedidoFragil(codigo, cliente, destino, pesoKg, distanciaKm, LocalDateTime.now());
+                break;
+            default:
+                throw new IllegalArgumentException("Tipo de pedido inválido.");
+        }
+        gestor.registrarPedido(pedido);
+        System.out.println("Pedido registrado exitosamente.");
     }
 
     // 4
