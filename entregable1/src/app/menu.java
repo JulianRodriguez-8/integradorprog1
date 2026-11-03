@@ -212,4 +212,51 @@ public class Menu {
             System.out.println(gestor.consultarEstadoPedido(codigoPedido));
         }
     }
+
+    //5
+    private void cambiarEstadoPedido() throws PedidoInvalidoException {
+        System.out.println("\n--- Cambiar Estado de Pedido ---");
+        String codigoPedido = leerTexto("Código del pedido: ");
+        int opcion = leerEntero("Nuevo estado (1. En camino, 2. Entregado, 3. Cancelado): ");
+
+        String nuevoEstado;
+        switch (opcion) {
+            case 1:
+                nuevoEstado = Pedido.EN_CAMINO;
+                break;
+            case 2:
+                nuevoEstado = Pedido.ENTREGADO;
+                break;
+            case 3:
+                nuevoEstado = Pedido.CANCELADO;
+                break;
+            default:
+                throw new IllegalArgumentException("Opción de estado inválida.");
+        }
+        gestor.cambiarEstadoPedido(codigoPedido, nuevoEstado);
+        System.out.println("Estado del pedido cambiado exitosamente.");
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //6
 }
