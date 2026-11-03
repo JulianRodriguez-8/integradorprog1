@@ -1,3 +1,5 @@
+//lo usamos para prueba y error
+
 package app;
 
 import excepciones.AlmacenamientoLlenoException;

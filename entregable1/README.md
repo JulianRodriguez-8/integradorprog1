@@ -6,7 +6,7 @@ Sistema desarrollado en Java para la gestión integral de envíos urbanos de la 
 
 ## 👥 Integrantes del Grupo
 * [Julián Rodríguez]
-* [Nombre y Apellido del Integrante 2]
+* [Matías Figueroa]
 
 
 ---
@@ -29,7 +29,16 @@ Remove-Item -Recurse -Force entregable1/out; javac -d entregable1/out (Get-Child
 ## 🤖 Declaración de Uso de Inteligencia Artificial
 
 * **Herramientas utilizadas:** 
-  * **Claude:** Utilizado en las etapas iniciales para estructurar las bases de código, proponer diseños orientados a objetos y asistir en la depuración y resolución de errores de compilación.
-  * **Gemini:** Utilizado como soporte para la revisión de buenas prácticas, la redacción de la documentación formal en Javadoc de las clases y la estructuración de la documentación del repositorio.
+  * **Claude:** Utilizado en las etapas iniciales para estructurar las bases de código, proponer diseños orientados a objetos, resolución de errores de compilación.
+  * **Gemini:** la redacción de la documentación formal en Javadoc de las clases y la estructuración de la documentación del repositorio.
 * **Propósito:** Agilizar el proceso de estructuración inicial, asegurar un estándar profesional en la documentación del código y optimizar la presentación técnica del proyecto.
-* **Verificación de resultados:** Todo el código fuente resultante, la implementación de la lógica de negocio, las estructuras de datos, las validaciones y los comandos automatizados de ejecución en PowerShell fueron analizados, probados, depurados y validados línea por línea por el equipo de desarrollo, garantizando el dominio total de la solución para su presentación y defensa oral.
+* **Verificación de resultados:** prueba y error constante, ejecutábamos el programa, ingresábamos datos a mano por consola, probabábamos romperlo a propósito con casos inválidos (como meter pesos negativos, códigos duplicados o pasarnos de los límites) para ver si saltaban las excepciones y el menú aguantaba sin romperse.
+
+---
+
+## 💡 Extras y Decisiones Propias fuera de la Consignas
+
+Además de cumplir con todos los requisitos obligatorios del entregable, sumamos algunas mejoras e implementaciones por cuenta propia:
+* **Manejo avanzado de excepciones y robustez:** En la interfaz de consola implementamos validaciones extra con bloques `try-catch` y un bloque `finally` para asegurar que el sistema nunca se caiga ni se rompa ante entradas maliciosas o errores de tipeo del usuario.
+* **Flexibilidad en el ingreso de datos:** Adaptamos la lectura de números decimales para que el sistema acepte indistintamente puntos (`.`) o comas (`,`), evitando problemas comunes con la configuración regional del teclado.
+* **Organización modular:** Estructuramos el código en paquetes bien definidos (`app`, `modelo`, `excepciones`) y automatizamos toda la compilación y ejecución mediante un script limpio en PowerShell.
