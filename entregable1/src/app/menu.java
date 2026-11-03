@@ -4,7 +4,7 @@ import excepciones.*;
 import java.util.Scanner;
 import modelo.*;
 
-public class Menu {
+public class menu {
 
     private Scanner teclado = new Scanner(System.in);
     private CityLink gestor = new CityLink();
@@ -55,28 +55,28 @@ public class Menu {
                 registrarCliente();
                 break;
             case 2:
-                 
+                registrarRepartidor();
                 break;
             case 3:
-              
+
                 break;
             case 4:
                 asignarPedido();
                 break;
             case 5:
-                
+
                 break;
             case 6:
-               
+
                 break;
             case 7:
-              
+
                 break;
             case 8:
-                
+
                 break;
             case 9:
-                
+
                 break;
             case 10:
                 System.out.println("Hasta luego.");
@@ -106,6 +106,7 @@ public class Menu {
         return teclado.nextLine().trim();
     }
 
+    // 1
     private void registrarCliente() throws AlmacenamientoLlenoException {
         System.out.println("\n--- Registrar Cliente ---");
         int codigo = leerEntero("Código: ");
@@ -118,14 +119,45 @@ public class Menu {
         System.out.println("Cliente registrado exitosamente.");
     }
 
+    // 2
+    private void registrarRepartidor() throws AlmacenamientoLlenoException {
+        System.out.println("\n--- Registrar Repartidor ---");
+        String legajo = leerTexto("Legajo: ");
+        String nombre = leerTexto("Nombre: ");
+        System.out.println("Tipo de vehículo (1. Bicicleta, 2. Moto, 3. Camioneta): ");
+        int tipo = leerEntero("Ingrese el número correspondiente al tipo de vehículo: ");
+        String patente = leerTexto("Patente: ");
+
+        Vehiculo vehiculo;
+        switch (tipo) {
+            case 1:
+                vehiculo = new Bicicleta(patente);
+                break;
+            case 2:
+                vehiculo = new Moto(patente);
+                break;
+            case 3:
+                vehiculo = new Camioneta(patente);
+                break;
+            default:
+             throw new IllegalArgumentException("Tipo de vehículo inválido.");
+        }
+
+        Repartidor repartidor = new Repartidor(legajo, nombre,
+                vehiculo);
+        gestor.registrarRepartidor(repartidor);
+        System.out.println("Repartidor registrado exitosamente.");
+    }
+
+    // 4
     private void asignarPedido() throws AlmacenamientoLlenoException, CapacidadExcedidaException {
         System.out.println("\n--- Asignar Pedido a Repartidor ---");
         String codigoPedido = leerTexto("Código del pedido: ");
         String legajoRepartidor = leerTexto("Legajo del repartidor: ");
 
-        gestor.buscarPedido(codigoPedido); 
+        gestor.buscarPedido(codigoPedido);
 
-       try {
+        try {
             gestor.asignarPedido(codigoPedido, legajoRepartidor);
             System.out.println("Pedido asignado exitosamente.");
         } catch (IllegalArgumentException e) {
