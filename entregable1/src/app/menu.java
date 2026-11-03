@@ -5,11 +5,20 @@ import java.util.Scanner;
 import modelo.*;
 import java.time.LocalDateTime;
 
+/**
+ * Clase encargada de la interfaz de usuario por consola en el sistema CityLink.
+ * Contiene el menú interactivo, la lectura y validación de datos por teclado,
+ * y la gestión centralizada de excepciones para evitar la interrupción del programa.
+ */
 public class Menu {
 
     private Scanner teclado = new Scanner(System.in);
     private CityLink gestor = new CityLink();
 
+    /**
+     * Inicia el flujo de la aplicación. Precarga los datos de prueba obligatorios
+     * y mantiene el bucle interactivo del menú hasta que el usuario decide salir.
+     */
     public void iniciar() {
 
         try{
@@ -43,6 +52,9 @@ public class Menu {
         } while (opcion != 10);
     }
 
+    /**
+     * Despliega las opciones disponibles del sistema en la consola.
+     */
     private void mostrarMenu() {
         System.out.println("\n===== CityLink =====");
         System.out.println("1. Registrar cliente");
@@ -57,6 +69,15 @@ public class Menu {
         System.out.println("10. Salir");
     }
 
+    /**
+     * Dirige la ejecución hacia el método correspondiente según la opción elegida en el menú.
+     * 
+     * @param opcion número entero que representa la opción del menú seleccionado
+     * @throws AlmacenamientoLlenoException si se supera la capacidad de almacenamiento
+     * @throws ClienteNoEncontradoException si no se halla el cliente asociado
+     * @throws PedidoInvalidoException si los datos del pedido son incorrectos
+     * @throws CapacidadExcedidaException si se supera la capacidad de carga del vehículo
+     */
     private void ejecutar(int opcion) throws AlmacenamientoLlenoException,
             ClienteNoEncontradoException, PedidoInvalidoException, CapacidadExcedidaException {
         switch (opcion) {
@@ -95,6 +116,12 @@ public class Menu {
         }
     }
 
+    /**
+     * Lee un número entero por teclado asegurando que el programa no finalice ante un error de formato.
+     * 
+     * @param mensaje texto indicador que se muestra al usuario
+     * @return el número entero ingresado válidamente
+     */
     private int leerEntero(String mensaje) {
         int numero = 0;
         boolean valido = false;
@@ -110,11 +137,24 @@ public class Menu {
         return numero;
     }
 
+    /**
+     * Lee una cadena de texto por teclado.
+     * 
+     * @param mensaje texto indicador que se muestra al usuario
+     * @return la cadena de texto ingresada y sin espacios sobrantes
+     */
     private String leerTexto(String mensaje) {
         System.out.print(mensaje);
         return teclado.nextLine().trim();
     }
 
+    /**
+     * Lee un número decimal por teclado aceptando tanto puntos como comas,
+     * previniendo cierres inesperados por errores de tipeo.
+     * 
+     * @param mensaje texto indicador que se muestra al usuario
+     * @return el valor decimal ingresado válidamente
+     */
     private double leerDecimal(String mensaje) {
         double numero = 0;
         boolean valido = false;
@@ -130,7 +170,11 @@ public class Menu {
         return numero;
     }
 
-    // 1
+    /**
+     * Opción 1: Solicita los datos y registra un nuevo cliente en el gestor.
+     * 
+     * @throws AlmacenamientoLlenoException si el arreglo de clientes llegó al límite
+     */
     private void registrarCliente() throws AlmacenamientoLlenoException {
         System.out.println("\n--- Registrar Cliente ---");
         int codigo = leerEntero("Código: ");
@@ -143,7 +187,11 @@ public class Menu {
         System.out.println("Cliente registrado exitosamente.");
     }
 
-    // 2
+    /**
+     * Opción 2: Solicita los datos y registra un nuevo repartidor con su respectivo vehículo.
+     * 
+     * @throws AlmacenamientoLlenoException si el arreglo de repartidores llegó al límite
+     */
     private void registrarRepartidor() throws AlmacenamientoLlenoException {
         System.out.println("\n--- Registrar Repartidor ---");
         String legajo = leerTexto("Legajo: ");
@@ -166,13 +214,18 @@ public class Menu {
                 throw new IllegalArgumentException("Tipo de vehículo inválido.");
         }
 
-        Repartidor repartidor = new Repartidor(legajo, nombre,
-                vehiculo);
+        Repartidor repartidor = new Repartidor(legajo, nombre, vehiculo);
         gestor.registrarRepartidor(repartidor);
         System.out.println("Repartidor registrado exitosamente.");
     }
 
-    // 3
+    /**
+     * Opción 3: Solicita los datos para registrar un pedido normal, urgente o frágil.
+     * 
+     * @throws AlmacenamientoLlenoException si el arreglo de pedidos llegó al límite
+     * @throws ClienteNoEncontradoException si el código de cliente ingresado no existe
+     * @throws PedidoInvalidoException si los datos del pedido son inválidos
+     */
     private void registrarPedido()
             throws AlmacenamientoLlenoException, ClienteNoEncontradoException, PedidoInvalidoException {
         System.out.println("\n--- Registrar Pedido ---");
@@ -202,7 +255,13 @@ public class Menu {
         System.out.println("Pedido registrado exitosamente.");
     }
 
-    // 4
+    /**
+     * Opción 4: Asigna un pedido existente a un repartidor, validando capacidad y restricciones,
+     * e implementa un bloque {@code finally} para garantizar la consulta del estado posterior.
+     * 
+     * @throws AlmacenamientoLlenoException si el repartidor alcanzó su tope de pedidos
+     * @throws CapacidadExcedidaException si el vehículo no puede soportar el pedido
+     */
     private void asignarPedido() throws AlmacenamientoLlenoException, CapacidadExcedidaException {
         System.out.println("\n--- Asignar Pedido a Repartidor ---");
         String codigoPedido = leerTexto("Código del pedido: ");
@@ -220,7 +279,10 @@ public class Menu {
         }
     }
 
-    //5
+    /**
+     * Opción 5: Modifica el estado de un pedido (en camino, entregado o cancelado)
+     * validando las transiciones permitidas.
+     */
     private void cambiarEstadoPedido() {
         System.out.println("\n--- Cambiar Estado de Pedido ---");
         String codigoPedido = leerTexto("Código del pedido: ");
@@ -244,10 +306,14 @@ public class Menu {
         System.out.println("Estado del pedido cambiado exitosamente.");
     }
 
-    //6
+    /**
+     * Opción 6: Busca un cliente por su código único o por su nombre.
+     * 
+     * @throws ClienteNoEncontradoException si el cliente no es hallado en el sistema
+     */
     private void buscarCliente() throws ClienteNoEncontradoException {
         System.out.println("\n--- Buscar Cliente ---");
-        int forma=leerEntero ("Buscar por (1. Código, 2. Nombre): ");
+        int forma = leerEntero("Buscar por (1. Código, 2. Nombre): ");
         
         Cliente cliente;
         switch (forma) {
@@ -262,22 +328,26 @@ public class Menu {
             default:
                 throw new IllegalArgumentException("Opción inválida.");
         }
-        System.out.println("Cliente encontrado: "+cliente.toString());
+        System.out.println("Cliente encontrado: " + cliente.toString());
     }
 
-
-    //7
+    /**
+     * Opción 7: Lista todos los pedidos registrados mostrando su costo y tiempo estimado (polimorfismo).
+     */
     private void listarPedidos() {
         System.out.println("\n--- Listado Pedidos ---");
-       String listado = gestor.listarPedidos();
-       if (listado.isEmpty()) {
-            System.out.println("No hay pedidos registrados.");
+        String listado = gestor.listarPedidos();
+        if (listado.isEmpty()) {
+             System.out.println("No hay pedidos registrados.");
         } else {
-            System.out.print(listado);
+             System.out.print(listado);
         }
     }
 
-    //8
+    /**
+     * Opción 8: Consulta y despliega el estado actual de un pedido o un repartidor 
+     * haciendo uso de la interfaz {@link Rastreable}.
+     */
     private void consultarEstado() {
         System.out.println("\n--- Consultar Estado ---");
         int forma = leerEntero("Consultar estado de (1. Pedido, 2. Repartidor): ");
@@ -296,7 +366,10 @@ public class Menu {
         }
     }
 
-    //9
+    /**
+     * Opción 9: Muestra el importe total monetario de los pedidos y las comisiones 
+     * calculadas para cada repartidor mediante la interfaz {@link Facturable}.
+     */
     private void verImportes() {
         System.out.println("\n--- Importes ---");
         double totalPedidos = gestor.calcularImporteTotal();
