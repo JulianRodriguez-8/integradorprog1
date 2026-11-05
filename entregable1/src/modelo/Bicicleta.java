@@ -4,13 +4,13 @@ package modelo;
  * Representa un vehículo de tipo bicicleta perteneciente a la flota de CityLink.
  * Posee una capacidad de carga de 10 kg, una velocidad promedio de 15 km/h,
  * un costo de $50 por kilómetro y no posee tiempo extra. Además, no puede transportar
- * pedidos frágiles por restricciones de seguridad[cite: 1, 2, 3].
+ * pedidos frágiles por restricciones de seguridad
  */
 public class Bicicleta extends Vehiculo {
  
     /**
      * Crea una bicicleta inicializando sus atributos base mediante la clase padre {@link Vehiculo}
-     * con valores predeterminados (patente, 10 kg de capacidad, 15 km/h y $50 por km)[cite: 1, 2, 3].
+     * con valores predeterminados (patente, 10 kg de capacidad, 15 km/h y $50 por km)
      * 
      * @param patente patente única de la bicicleta, no puede estar vacía
      */
@@ -21,7 +21,7 @@ public class Bicicleta extends Vehiculo {
     /**
      * Calcula el tiempo estimado de entrega para una bicicleta en minutos.
      * Se obtiene dividiendo la distancia entre la velocidad y multiplicando por 60,
-     * sin aplicar ningún tiempo extra[cite: 1, 2, 3].
+     * sin aplicar ningún tiempo extra
      * 
      * @param distanciaKm distancia a recorrer en kilómetros
      * @return el tiempo estimado de entrega en minutos

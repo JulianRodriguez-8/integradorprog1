@@ -3,16 +3,16 @@ package modelo;
 /**
  * Representa un vehículo de tipo moto perteneciente a la flota de CityLink.
  * Posee una capacidad de carga de 30 kg, una velocidad promedio de 40 km/h,
- * un costo de $120 por kilómetro y un tiempo extra de 5 minutos por estacionamiento[cite: 1, 2].
+ * un costo de $120 por kilómetro y un tiempo extra de 5 minutos por estacionamiento
  */
 public class Moto extends Vehiculo {
     
-    /** Tiempo extra en minutos agregado al tiempo de entrega por concepto de estacionamiento[cite: 2]. */
+    /** Tiempo extra en minutos agregado al tiempo de entrega por concepto de estacionamiento. */
     public static final double MINUTOS_EXTRA = 5;
 
     /**
      * Crea una moto inicializando sus atributos base mediante la clase padre {@link Vehiculo}
-     * con valores predeterminados (patente, 30 kg de capacidad, 40 km/h y $120 por km)[cite: 1, 2].
+     * con valores predeterminados (patente, 30 kg de capacidad, 40 km/h y $120 por km)
      * 
      * @param patente patente única de la moto, no puede estar vacía
      */
