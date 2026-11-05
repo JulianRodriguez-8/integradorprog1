@@ -6,7 +6,7 @@ Sistema desarrollado en Java para la gestión integral de envíos urbanos de la 
 
 ## 👥 Integrantes del Grupo
 * [Julián Rodríguez]
-* [Matías Figueroa]
+
 
 
 ---
@@ -33,15 +33,15 @@ Remove-Item -Recurse -Force entregable1/out; javac -d entregable1/out (Get-Child
   * **Claude:** Utilizado en las etapas iniciales para estructurar las bases de código, proponer diseños orientados a objetos, resolución de errores de compilación.
   * **Gemini:** la redacción de la documentación formal en Javadoc de las clases y la estructuración de la documentación del repositorio.
 * **Propósito:** Agilizar el proceso de estructuración inicial, asegurar un estándar profesional en la documentación del código y optimizar la presentación técnica del proyecto.
-* **Verificación de resultados:** prueba y error constante, ejecutábamos el programa, ingresábamos datos a mano por consola, probabábamos romperlo a propósito con casos inválidos (como meter pesos negativos, códigos duplicados o pasarnos de los límites) para ver si saltaban las excepciones y el menú aguantaba sin romperse.
+* **Verificación de resultados:** prueba y error constante, ejecutaba el programa, ingresaba datos a mano por consola, probababa romperlo a propósito con casos inválidos (como meter pesos negativos, códigos duplicados o pasarnos de los límites) para ver si saltaban las excepciones y el menú aguantaba sin romperse.
 
 ---
 
 ## 💡 Extras y Decisiones Propias fuera de la Consignas
 
 implementaciones por cuenta propia:
-* **Manejo avanzado de excepciones y robustez:** En la interfaz de consola implementamos validaciones extra con bloques `try-catch` y un bloque `finally` para asegurar que el sistema nunca se caiga ni se rompa ante entradas inválidas o errores de tipeo del usuario.
-* **Flexibilidad en el ingreso de datos:** Adaptamos la lectura de números decimales para que el sistema acepte indistintamente puntos (`.`) o comas (`,`), evitando problemas comunes con la configuración regional del teclado. Tambien búsqueda por nombre sin distinguir mayúsculas (equalsIgnoreCase).
+* **Manejo avanzado de excepciones y robustez:** En la interfaz de consola implementao validaciones extra con bloques `try-catch` y un bloque `finally` para asegurar que el sistema nunca se caiga ni se rompa ante entradas inválidas o errores de tipeo del usuario.
+* **Flexibilidad en el ingreso de datos:** Adapta la lectura de números decimales para que el sistema acepte indistintamente puntos (`.`) o comas (`,`), evitando problemas comunes con la configuración regional del teclado. Tambien búsqueda por nombre sin distinguir mayúsculas (equalsIgnoreCase).
 * **Automatización de compilación con PowerShell:** Dejamos la compilación y la ejecución en un solo comando de PowerShell.
 * **Puebas Internas:** Un archivo PruebaModelo.java. 
 *  **vehiculoAsignado en Pedido:** Pedido implementa Facturable, cuyo calcularImporte() no recibe parámetros, pero el costo depende del vehículo. La solución fue que Pedido guarde con que Vehiculo se entrega. Repartidor.asignarPedido se lo pasa con setVehiculoAsignado, y calcularImporte() devuelve 0 si todavía no tiene vehículo.
