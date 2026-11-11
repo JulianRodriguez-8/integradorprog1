@@ -4,51 +4,53 @@ import modelo.*;
 import java.time.LocalDateTime;
 import excepciones.*;
 
+//agrego
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
  * Clase gestora principal del sistema CityLink.
- * Administra el almacenamiento estático mediante arreglos (clientes, pedidos y repartidores),
- * implementa las reglas de negocio, el registro, las búsquedas, las asignaciones y la carga de datos de prueba.
+ * Administra el almacenamiento dinámico mediante colecciones de java.util
+ * TreeMap para clientes, ArrayList para pedidos y repartidores)
+ * implementa las reglas de negocio, el registro, las búsquedas, las
+ * asignaciones y la carga de datos de prueba.
  * 
- * @version 1.0
+ * @version 2.0
  * @author Grupo CityLink
  */
 public class CityLink {
+    // reemplazo los arreglos
+    private Map<Integer, Cliente> clientes;
+    private List<Pedido> pedidos;
+    private List<Repartidor> repartidores;
 
-    /** Capacidad máxima permitida para el arreglo de clientes. */
-    public static final int MAX_CLIENTES = 50;
-    /** Capacidad máxima permitida para el arreglo de pedidos. */
-    public static final int MAX_PEDIDOS = 100;
-    /** Capacidad máxima permitida para el arreglo de repartidores. */
-    public static final int MAX_REPARTIDORES = 10;
+    public CityLink {
+        //// TreeMap ordena automáticamente a los clientes por su código entero.
+        this.clientes = new TreeMap<>();
+        this.clientes = new TreeMap<>();
+        this.pedidos = new ArrayList<>();
+        this.repartidores = new ArrayList<>();
 
-    private Cliente[] clientes = new Cliente[MAX_CLIENTES];
-    private Pedido[] pedidos = new Pedido[MAX_PEDIDOS];
-    private Repartidor[] repartidores = new Repartidor[MAX_REPARTIDORES];
-
-    private int cantidadClientes = 0;
-    private int cantidadPedidos = 0;
-    private int cantidadRepartidores = 0;
+    }
 
     /**
-     * Registra un nuevo cliente en el sistema validando la capacidad máxima 
-     * y que no exista un cliente duplicado con el mismo código.
+     * Registra un nuevo cliente en el sistema
      * 
      * @param cliente el objeto Cliente que se desea registrar
-     * @throws AlmacenamientoLlenoException si se alcanza el límite máximo de clientes
-     * @throws IllegalArgumentException si ya existe un cliente registrado con el mismo código
+     * @throws IllegalArgumentException si ya existe un cliente registrado con el
+     *                                  mismo código
      */
-    public void registrarCliente(Cliente cliente) throws AlmacenamientoLlenoException {
-        if (cantidadClientes >= MAX_CLIENTES) {
-            throw new AlmacenamientoLlenoException("Se ha alcanzado el límite máximo de clientes.");
+    public void registrarCliente(Cliente cliente) {
+        // busca si el codigo busca si ya existe
+        if (clientes.containsKey(cliente.getCodigo())) {
+            throw new IllegalArgumentException(
+                    "El cliente con código " + cliente.getCodigo() + " ya está registrado.");
         }
-        for (int i = 0; i < cantidadClientes; i++) {
-            if (clientes[i].getCodigo() == cliente.getCodigo()) {
-                throw new IllegalArgumentException(
-                        "El cliente con código " + cliente.getCodigo() + " ya está registrado.");
-            }
-        }
-        clientes[cantidadClientes] = cliente;
-        cantidadClientes++;
+        // put inserta el cliente en el árbol asociado a su código.
+        clientes.put(cliente.getCodigo(), cliente);
+
     }
 
     /**
@@ -56,28 +58,33 @@ public class CityLink {
      * 
      * @param codigo código entero del cliente a buscar
      * @return el objeto Cliente encontrado
-     * @throws ClienteNoEncontradoException si el cliente no se encuentra en el sistema
+     * @throws ClienteNoEncontradoException si el cliente no se encuentra en el
+     *                                      sistema
      */
     public Cliente buscarCliente(int codigo) throws ClienteNoEncontradoException {
-        for (int i = 0; i < cantidadClientes; i++) {
-            if (clientes[i].getCodigo() == codigo) {
-                return clientes[i];
-            }
+        //// get busca en el árbol directamente
+        Cliente cliente = clientes.get(codigo);
+        if (clientes == null) {
+            throw new ClienteNoEncontradoException("Cliente con código " + codigo + " no encontrado.");
+
         }
-        throw new ClienteNoEncontradoException("Cliente con código " + codigo + " no encontrado.");
+        return cliente;
     }
 
     /**
-     * Busca y retorna un cliente utilizando su nombre (ignorando mayúsculas y minúsculas).
+     * Busca y retorna un cliente utilizando su nombre (ignorando mayúsculas y
+     * minúsculas).
      * 
      * @param nombre nombre del cliente a buscar
      * @return el objeto Cliente encontrado
-     * @throws ClienteNoEncontradoException si el cliente no se encuentra en el sistema
+     * @throws ClienteNoEncontradoException si el cliente no se encuentra en el
+     *                                      sistema
      */
     public Cliente buscarCliente(String nombre) throws ClienteNoEncontradoException {
-        for (int i = 0; i < cantidadClientes; i++) {
-            if (clientes[i].getNombre().equalsIgnoreCase(nombre)) {
-                return clientes[i];
+        //rcorre los valores del TreeMap
+        for (Cliente: c:clientes.values()) {
+            if (c.getNombre().equalsIgnoreCase(nombre)) {
+                return c;
             }
         }
         throw new ClienteNoEncontradoException("Cliente con nombre " + nombre + " no encontrado.");
@@ -88,31 +95,31 @@ public class CityLink {
      * y que no exista un legajo duplicado.
      * 
      * @param repartidor el objeto Repartidor a registrar
-     * @throws AlmacenamientoLlenoException si se alcanza el límite máximo de repartidores
-     * @throws IllegalArgumentException si ya existe un repartidor con el mismo legajo
+     *
+     * @throws IllegalArgumentException     si ya existe un repartidor con el mismo
+     *                                      legajo
      */
-    public void registrarRepartidor(Repartidor repartidor) throws AlmacenamientoLlenoException {
-        if (cantidadRepartidores >= MAX_REPARTIDORES) {
-            throw new AlmacenamientoLlenoException("Se ha alcanzado el límite máximo de repartidores.");
-        }
-        for (int i = 0; i < cantidadRepartidores; i++) {
-            if (repartidores[i].getLegajo().equals(repartidor.getLegajo())) {
+    public void registrarRepartidor(Repartidor repartidor)  {
+       
+        for (Repartidor r:repartidores) {
+            if (r.getLegajo().equals(repartidor.getLegajo())) {
                 throw new IllegalArgumentException(
                         "Ya existe un repartidor con legajo " + repartidor.getLegajo() + ".");
             }
         }
-        repartidores[cantidadRepartidores] = repartidor;
-        cantidadRepartidores++;
+        repartidores.add(repartidor);
     }
 
     /**
-     * Registra un nuevo pedido verificando el límite de almacenamiento, 
+     * Registra un nuevo pedido verificando el límite de almacenamiento,
      * la existencia previa del cliente asociado y la unicidad del código de pedido.
      * 
      * @param pedido el objeto Pedido a registrar
-     * @throws PedidoInvalidoException si el código del pedido ya está duplicado
-     * @throws ClienteNoEncontradoException si el cliente asociado no existe en el sistema
-     * @throws AlmacenamientoLlenoException si se alcanza el límite máximo de pedidos
+     * @throws PedidoInvalidoException      si el código del pedido ya está
+     *                                      duplicado
+     * @throws ClienteNoEncontradoException si el cliente asociado no existe en el
+     *                                      sistema
+     * 
      */
     public void registrarPedido(Pedido pedido)
             throws PedidoInvalidoException, ClienteNoEncontradoException, AlmacenamientoLlenoException {
@@ -162,13 +169,16 @@ public class CityLink {
     }
 
     /**
-     * Asigna un pedido a un repartidor específico, validando que el pedido no se encuentre asignado previamente.
+     * Asigna un pedido a un repartidor específico, validando que el pedido no se
+     * encuentre asignado previamente.
      * 
      * @param codigoPedido código del pedido a asignar
-     * @param legajo legajo del repartidor receptor
-     * @throws CapacidadExcedidaException si el vehículo no puede transportar el pedido
-     * @throws AlmacenamientoLlenoException si el repartidor alcanzó su tope de pedidos
-     * @throws IllegalArgumentException si el pedido ya se encuentra asignado
+     * @param legajo       legajo del repartidor receptor
+     * @throws CapacidadExcedidaException   si el vehículo no puede transportar el
+     *                                      pedido
+     * @throws AlmacenamientoLlenoException si el repartidor alcanzó su tope de
+     *                                      pedidos
+     * @throws IllegalArgumentException     si el pedido ya se encuentra asignado
      */
     public void asignarPedido(String codigoPedido, String legajo)
             throws CapacidadExcedidaException, AlmacenamientoLlenoException {
@@ -204,7 +214,8 @@ public class CityLink {
     }
 
     /**
-     * Calcula la suma monetaria total de los importes de todos los pedidos del sistema.
+     * Calcula la suma monetaria total de los importes de todos los pedidos del
+     * sistema.
      * 
      * @return importe total acumulado
      */
@@ -217,7 +228,8 @@ public class CityLink {
     }
 
     /**
-     * Genera un reporte textual con el nombre, legajo y comisiones calculadas de cada repartidor.
+     * Genera un reporte textual con el nombre, legajo y comisiones calculadas de
+     * cada repartidor.
      * 
      * @return cadena con el detalle de las comisiones
      */
@@ -231,11 +243,13 @@ public class CityLink {
     }
 
     /**
-     * Modifica el estado de un pedido validando que tenga un repartidor asignado (excepto si se cancela).
+     * Modifica el estado de un pedido validando que tenga un repartidor asignado
+     * (excepto si se cancela).
      * 
      * @param codigoPedido código del pedido a modificar
-     * @param nuevoEstado nuevo estado a establecer
-     * @throws IllegalArgumentException si el pedido no posee repartidor asignado al intentar cambiar de estado
+     * @param nuevoEstado  nuevo estado a establecer
+     * @throws IllegalArgumentException si el pedido no posee repartidor asignado al
+     *                                  intentar cambiar de estado
      */
     public void cambiarEstadoPedido(String codigoPedido, String nuevoEstado) {
         Pedido pedido = buscarPedido(codigoPedido);
@@ -246,7 +260,8 @@ public class CityLink {
     }
 
     /**
-     * Consulta el estado actual de un pedido haciendo uso de la interfaz {@link Rastreable}.
+     * Consulta el estado actual de un pedido haciendo uso de la interfaz
+     * {@link Rastreable}.
      * 
      * @param codigoPedido código del pedido a consultar
      * @return cadena con el estado actual del pedido
@@ -257,7 +272,8 @@ public class CityLink {
     }
 
     /**
-     * Consulta el estado actual de un repartidor haciendo uso de la interfaz {@link Rastreable}.
+     * Consulta el estado actual de un repartidor haciendo uso de la interfaz
+     * {@link Rastreable}.
      * 
      * @param legajo legajo del repartidor a consultar
      * @return cadena con el estado actual del repartidor
@@ -268,7 +284,7 @@ public class CityLink {
     }
 
     /**
-     * Elimina un cliente del arreglo estático a partir de su código, 
+     * Elimina un cliente del arreglo estático a partir de su código,
      * desplazando los elementos subsiguientes para no dejar huecos.
      * 
      * @param codigo código del cliente a eliminar
@@ -293,13 +309,16 @@ public class CityLink {
     }
 
     /**
-     * Precarga datos iniciales obligatorios en el sistema (clientes, repartidores con sus vehículos,
+     * Precarga datos iniciales obligatorios en el sistema (clientes, repartidores
+     * con sus vehículos,
      * pedidos de diversos tipos, asignaciones y cambios de estado de prueba).
      * 
-     * @throws AlmacenamientoLlenoException si se excede la capacidad de los arreglos
+     * @throws AlmacenamientoLlenoException si se excede la capacidad de los
+     *                                      arreglos
      * @throws ClienteNoEncontradoException si un cliente referenciado no existe
-     * @throws PedidoInvalidoException si algún dato del pedido es inválido
-     * @throws CapacidadExcedidaException si un vehículo excede su capacidad al asignar
+     * @throws PedidoInvalidoException      si algún dato del pedido es inválido
+     * @throws CapacidadExcedidaException   si un vehículo excede su capacidad al
+     *                                      asignar
      */
     public void cargarDatosPrueba() throws AlmacenamientoLlenoException, ClienteNoEncontradoException,
             PedidoInvalidoException, CapacidadExcedidaException {
