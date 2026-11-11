@@ -1,27 +1,30 @@
 package modelo;
 
 import excepciones.CapacidadExcedidaException;
-import excepciones.AlmacenamientoLlenoException;
+//no va mas almacenamientolleno
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Representa a un repartidor de la empresa CityLink. 
- * Cuenta con un legajo, un nombre, un vehículo asignado y un arreglo estático de pedidos a su cargo.
+ * Representa a un repartidor de la empresa CityLink.
+ * Cuenta con un legajo, un nombre, un vehículo asignado y un arreglo de pedidos
+ * a su cargo.
  * Implementa las interfaces {@link Rastreable} y {@link Facturable}.
  */
 public class Repartidor implements Rastreable, Facturable {
-    /** Capacidad máxima de pedidos que puede portar un repartidor. */
-    public static final int MAX_PEDIDOS = 20;
-    
+
+    private List<Pedido> pedidosAsignados;
+
     private String legajo;
     private String nombre;
     private Vehiculo vehiculoAsig;
-    private Pedido[] pedidosAsignados = new Pedido[MAX_PEDIDOS];
-    private int cantidadPedidos = 0;
 
     /**
      * Crea un repartidor validando sus datos principales a través de los setters.
      * 
-     * @param legajo           legajo único del repartidor, no puede ser nulo ni vacío
+     * @param legajo           legajo único del repartidor, no puede ser nulo ni
+     *                         vacío
      * @param nombre           nombre del repartidor, no puede ser nulo ni vacío
      * @param vehiculoAsignado vehículo asignado al repartidor, no puede ser nulo
      * @throws IllegalArgumentException si algún parámetro es inválido
@@ -30,6 +33,8 @@ public class Repartidor implements Rastreable, Facturable {
         setLegajo(legajo);
         setNombre(nombre);
         setVehiculoAsig(vehiculoAsignado);
+        // inicializo la lista
+        this.pedidosAsignados = new ArrayList<>();
     }
 
     /** @return el legajo del repartidor */
@@ -47,9 +52,9 @@ public class Repartidor implements Rastreable, Facturable {
         return vehiculoAsig;
     }
 
-    /** @return la cantidad actual de pedidos asignados */
+    /** @return la cantidad actual de pedidos asignados pero ahora con size */
     public int getCantidadPedidos() {
-        return cantidadPedidos;
+        return pedidosAsignados.size();
     }
 
     /**
@@ -98,75 +103,77 @@ public class Repartidor implements Rastreable, Facturable {
      * Asigna un pedido al repartidor utilizando por defecto su vehículo asignado.
      * 
      * @param pedido pedido que se desea asignar
-     * @throws CapacidadExcedidaException si el vehículo no puede transportar el pedido
-     * @throws AlmacenamientoLlenoException si se alcanza el límite máximo de pedidos del repartidor
+     * @throws CapacidadExcedidaException   si el vehículo no puede transportar el pedido
      */
-    public void asignarPedido(Pedido pedido) throws CapacidadExcedidaException, AlmacenamientoLlenoException {
+    public void asignarPedido(Pedido pedido) throws CapacidadExcedidaException {
         asignarPedido(pedido, vehiculoAsig);
     }
 
     /**
-     * Asigna un pedido al repartidor validando la capacidad del vehículo indicado y el límite de almacenamiento.
+     * Asigna un pedido al repartidor validando la capacidad del vehículo indicado y
+     * el límite de almacenamiento.
      * 
      * @param pedido   pedido que se desea asignar
-     * @param vehiculo vehículo con el cual se evaluarán las restricciones de transporte
-     * @throws CapacidadExcedidaException si el vehículo no puede transportar el pedido
-     * @throws AlmacenamientoLlenoException si se alcanza el límite máximo de pedidos del repartidor
+     * @param vehiculo vehículo con el cual se evaluarán las restricciones de
+     *                 transporte
+     * @throws CapacidadExcedidaException si el vehículo no puede transportar el
+     *                                    pedido
+     * 
      */
     public void asignarPedido(Pedido pedido, Vehiculo vehiculo)
-            throws CapacidadExcedidaException, AlmacenamientoLlenoException {
-        if (cantidadPedidos >= MAX_PEDIDOS) {
-            throw new AlmacenamientoLlenoException("No se pueden asignar más pedidos. Capacidad máxima alcanzada.");
-        }
+            throws CapacidadExcedidaException {
+
         if (!vehiculo.puedeTransportar(pedido)) {
             throw new CapacidadExcedidaException("El vehículo no puede transportar el pedido.");
         }
-        pedidosAsignados[cantidadPedidos] = pedido;
-        cantidadPedidos++;
+        pedidosAsignados.add(pedido); // antes era pedidosAsignados[cantidadPedidos] = pedido;
+
         pedido.setVehiculoAsignado(vehiculo);
     }
 
     /**
-     * Registra la entrega efectiva de un pedido asignado, actualizando su estado a entregado.
+     * Registra la entrega efectiva de un pedido asignado, actualizando su estado a
+     * entregado.
      * 
      * @param pedido pedido entregado
-     * @throws IllegalArgumentException si el pedido no se encuentra asignado a este repartidor
+     * @throws IllegalArgumentException si el pedido no se encuentra asignado a este
+     *                                  repartidor
      */
     public void registrarEntrega(Pedido pedido) {
-        boolean encontrado = false;
-        for (int i = 0; i < cantidadPedidos; i++) {
-            if (pedidosAsignados[i] == (pedido)) {
-                encontrado = true;
-            }
-        }
-        if (!encontrado) {
+        // contains busca si el obj esta en la lista
+        if (!pedidosAsignados.contains(pedido)) {
             throw new IllegalArgumentException("El pedido no está asignado a este repartidor.");
         }
         pedido.cambiarEstado(Pedido.ENTREGADO);
     }
 
     /**
-     * Obtiene el estado actual del repartidor implementando la interfaz {@link Rastreable}.
+     * Obtiene el estado actual del repartidor implementando la interfaz
+     * {@link Rastreable}.
      * 
-     * @return cadena con información del legajo, nombre y cantidad de pedidos asignados
+     * @return cadena con información del legajo, nombre y cantidad de pedidos
+     *         asignados
      */
     @Override
-    public String obtenerEstadoActual() {
-        return "Repartidor " + legajo + " (" + nombre + "): " + cantidadPedidos + " pedidos asignados";
+    public String obtenerEstadoActual() {         //cantidadPedido la cambio por get
+        return "Repartidor " + legajo + " (" + nombre + "): " + getCantidadPedidos() + " pedidos asignados";
     }
 
     /**
-     * Calcula la comisión total del repartidor implementando la interfaz {@link Facturable}.
-     * Corresponde al 10% de la suma de los importes de los pedidos que ya fueron entregados.
+     * Calcula la comisión total del repartidor implementando la interfaz
+     * {@link Facturable}.
+     * Corresponde al 10% de la suma de los importes de los pedidos que ya fueron
+     * entregados.
      * 
      * @return importe total de la comisión en dinero
      */
     @Override
     public double calcularImporte() {
         double total = 0;
-        for (int i = 0; i < cantidadPedidos; i++) {
-            if (pedidosAsignados[i].getEstado().equals(Pedido.ENTREGADO)) {
-                total = total + pedidosAsignados[i].calcularImporte();
+        //for-each, para cada Pedido 'p' en la lista pedidosAsignados
+        for (Pedido p : pedidosAsignados) {
+            if (p.getEstado().equals(Pedido.ENTREGADO)) {
+                total = total + p.calcularImporte();
             }
         }
         return total * 0.1;
