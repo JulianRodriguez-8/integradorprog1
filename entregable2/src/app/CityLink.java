@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 /**
  * Clase gestora principal del sistema CityLink.
@@ -25,6 +27,8 @@ public class CityLink {
     private Map<Integer, Cliente> clientes;
     private List<Pedido> pedidos;
     private List<Repartidor> repartidores;
+    private Queue<Pedido>colaUrgentes;
+    private Queue<Pedido>colaNormales; 
 
     public CityLink (){
         //// TreeMap ordena automáticamente a los clientes por su código entero.
@@ -32,6 +36,8 @@ public class CityLink {
         this.clientes = new TreeMap<>();
         this.pedidos = new ArrayList<>();
         this.repartidores = new ArrayList<>();
+        this.colaUrgentes=new ArrayDeque<>();
+        this.colaNormales= new ArrayDeque<>();
 
     }
 
@@ -132,6 +138,13 @@ public class CityLink {
 
         }
         pedidos.add(pedido);
+        // instanceof comoprueba si es urgente o normal
+        if (pedido instanceof PedidoUrgente){
+            colaUrgentes.offer(pedido); //offer ingresa al final de la cola
+        }else{
+
+            colaNormales.offer(pedido);
+        }
     }
 
     /**
@@ -297,7 +310,9 @@ public class CityLink {
         }
          
     }   
-        
+    public void atenderSiguienteCliente(String legajoRepartidor) throws SinPedidosPendientesException, CapacidadExcedidaException{
+
+    }       
     
 
     /**
