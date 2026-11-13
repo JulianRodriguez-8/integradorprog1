@@ -6,11 +6,12 @@ import excepciones.*;
 
 //agrego
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.ArrayDeque;
-import java.util.Queue;
+import java.util.TreeMap;
+import java.util.Queue; //cola
 
 /**
  * Clase gestora principal del sistema CityLink.
@@ -27,17 +28,19 @@ public class CityLink {
     private Map<Integer, Cliente> clientes;
     private List<Pedido> pedidos;
     private List<Repartidor> repartidores;
-    private Queue<Pedido>colaUrgentes;
-    private Queue<Pedido>colaNormales; 
+    private Queue<Pedido> colaUrgentes;
+    private Queue<Pedido> colaNormales;
+    private Deque<Operacion> historial;// guardo tickets
 
-    public CityLink (){
+    public CityLink() {
         //// TreeMap ordena automáticamente a los clientes por su código entero.
-        
+
         this.clientes = new TreeMap<>();
         this.pedidos = new ArrayList<>();
         this.repartidores = new ArrayList<>();
-        this.colaUrgentes=new ArrayDeque<>();
-        this.colaNormales= new ArrayDeque<>();
+        this.colaUrgentes = new ArrayDeque<>();
+        this.colaNormales = new ArrayDeque<>();
+        this.historial = new ArrayDeque<>();
 
     }
 
@@ -87,8 +90,8 @@ public class CityLink {
      *                                      sistema
      */
     public Cliente buscarCliente(String nombre) throws ClienteNoEncontradoException {
-        //rcorre los valores del TreeMap
-        for (Cliente c:clientes.values()) {
+        // rcorre los valores del TreeMap
+        for (Cliente c : clientes.values()) {
             if (c.getNombre().equalsIgnoreCase(nombre)) {
                 return c;
             }
@@ -139,12 +142,15 @@ public class CityLink {
         }
         pedidos.add(pedido);
         // instanceof comoprueba si es urgente o normal
-        if (pedido instanceof PedidoUrgente){
-            colaUrgentes.offer(pedido); //offer ingresa al final de la cola
-        }else{
+        if (pedido instanceof PedidoUrgente) {
+            colaUrgentes.offer(pedido); // offer ingresa al final de la cola
+        } else {
 
             colaNormales.offer(pedido);
         }
+
+        // guardo el ticket
+        historial.push(new Operacion("ALTA_PEDIDO", pedido, null, null));
     }
 
     /**
@@ -249,7 +255,7 @@ public class CityLink {
         String resultado = "";
         for (Repartidor r : repartidores) {
             resultado = resultado + r.getNombre() + " (" + r.getLegajo()
-            + "): comisión $" + r.calcularImporte() + "\n";
+                    + "): comisión $" + r.calcularImporte() + "\n";
         }
         return resultado;
     }
@@ -267,8 +273,13 @@ public class CityLink {
         Pedido pedido = buscarPedido(codigoPedido);
         if (!nuevoEstado.equals(Pedido.CANCELADO) && pedido.getVehiculoAsignado() == null) {
             throw new IllegalArgumentException("El pedido " + codigoPedido + " no tiene repartidor asignado.");
+
         }
+        String estadoViejo = pedido.getEstado();
         pedido.cambiarEstado(nuevoEstado);
+
+        // guardo ticket
+        historial.push(new Operacion("CAMBIO_ESTADO", pedido, estadoViejo, null));
     }
 
     /**
@@ -296,37 +307,90 @@ public class CityLink {
     }
 
     /**
-     *  Elimina un cliente del mapa dinámico a partir de su código
-     * desplazando los elementos subsiguientes para no dejar huecos.
+     * Elimina un cliente del mapa dinámico a partir de su código.
      * 
      * @param codigo código del cliente a eliminar
      * @throws ClienteNoEncontradoException si el cliente no existe
      */
     public void eliminarCliente(int codigo) throws ClienteNoEncontradoException {
 
-        //remove busca la clave en el árbol y la elimina automáticamente.
-        if (clientes.remove(codigo)==null) {
+        // remove busca la clave en el árbol y la elimina automáticamente.
+        if (clientes.remove(codigo) == null) {
             throw new ClienteNoEncontradoException("Cliente con código " + codigo + " no encontrado.");
         }
-         
-    }   
-    public void atenderSiguienteCliente(String legajoRepartidor) throws SinPedidosPendientesException, CapacidadExcedidaException{
 
-    }       
-    
+    }
+
+    /**
+     * Atiende el siguiente pedido pendiente, priorizando la cola de urgentes.
+     * Lo extrae de la cola, lo asigna a un repartidor y lo pone en camino.
+     * 
+     * @param legajoRepartidor legajo del repartidor que tomará el pedido
+     * @throws SinPedidosPendientesException si ambas colas están vacías
+     * @throws CapacidadExcedidaException    si el vehículo del repartidor no
+     *                                       soporta el pedido
+     */
+    public void atenderSiguientePedido(String legajoRepartidor)
+            throws SinPedidosPendientesException, CapacidadExcedidaException {
+        Pedido pedidoAAtender = colaUrgentes.poll(); // lee al primer elemento de la fila y lo saca de la cola para que
+                                                     // el que estaba atrás pase a ser el primero.
+        if (pedidoAAtender == null) {
+            pedidoAAtender = colaNormales.poll();
+        }
+        if (pedidoAAtender == null) {
+            throw new SinPedidosPendientesException("No hay pedidos pendientes para atender");
+        }
+
+        Repartidor repartidor = buscarRepartidor(legajoRepartidor);
+        repartidor.asignarPedido(pedidoAAtender);
+        pedidoAAtender.cambiarEstado(Pedido.EN_CAMINO);
+
+    }
+
+    /**
+     * Revierte la última acción realizada por el operador leyendo la Pila de
+     * historial.
+     * 
+     * @throws IllegalStateException si no hay operaciones registradas para deshacer
+     */
+    public void deshacerUltimaOperacion() {
+        if (historial.isEmpty()) {
+            throw new IllegalStateException("No hay operaciones en el historial para deshacer.");
+        }
+
+        Operacion ultima = historial.pop();
+        Pedido p = ultima.getPedidoAfectado();
+
+        if (ultima.getTipoAccion().equals("ALTA_PEDIDO")) {
+            // Para deshacer un alta, borramos el pedido del sistema
+            pedidos.remove(p);
+            if (p instanceof PedidoUrgente) {
+                colaUrgentes.remove(p);
+            } else {
+                colaNormales.remove(p);
+            }
+            System.out.println("Se deshizo el registro del pedido: " + p.getCodigo());
+
+        } else if (ultima.getTipoAccion().equals("CAMBIO_ESTADO")) {
+            // Para deshacer un cambio de estado, le devolvemos su estado viejo
+            p.cambiarEstado(ultima.getEstadoAnterior());
+            System.out.println("Se deshizo el cambio de estado. El pedido " + p.getCodigo() +
+            " volvió a " + ultima.getEstadoAnterior());
+        }
+    }
 
     /**
      * Precarga datos iniciales obligatorios en el sistema (clientes, repartidores
      * con sus vehículos,
      * pedidos de diversos tipos, asignaciones y cambios de estado de prueba).
      * 
-     
+     * 
      * @throws ClienteNoEncontradoException si un cliente referenciado no existe
      * @throws PedidoInvalidoException      si algún dato del pedido es inválido
      * @throws CapacidadExcedidaException   si un vehículo excede su capacidad al
      *                                      asignar
      */
-    public void cargarDatosPrueba() throws  ClienteNoEncontradoException,
+    public void cargarDatosPrueba() throws ClienteNoEncontradoException,
             PedidoInvalidoException, CapacidadExcedidaException {
 
         // 5 clientes
