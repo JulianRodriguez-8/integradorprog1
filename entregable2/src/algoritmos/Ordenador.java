@@ -24,6 +24,38 @@ public class Ordenador {
      * @param comparador el criterio de ordenamiento (por costo, distancia, fecha,
      *                   etc.)
      */
+
+    public static void ordenarBurbuja(List<Pedido> lista, Comparator<Pedido> comparador) {
+        int n = lista.size();
+        boolean huboCambios;
+
+        for (int i = 0; i < n - 1; i++) {
+            huboCambios = false;
+            for (int j = 0; j < n - 1 - i; j++) {
+                Pedido p1 = lista.get(j);
+                Pedido p2 = lista.get(j + 1);
+
+                // Si p1 es "mayor" que p2 según el criterio, los intercambiamos
+                if (comparador.compare(p1, p2) > 0) {
+                    lista.set(j, p2);
+                    lista.set(j + 1, p1);
+                    huboCambios = true;
+                }
+            }
+            // Optimización: si en una vuelta completa no hubo cambios, la lista ya está ordenada
+            if (!huboCambios) {
+                break;
+            }
+        }
+    }
+
+    /**
+     * Ordena una lista de pedidos utilizando el algoritmo de Inserción (Insertion Sort).
+     * Construye la lista ordenada elemento por elemento, insertando cada uno en su lugar correcto.
+     * 
+     * @param lista la lista de pedidos a ordenar
+     * @param comparador el criterio de ordenamiento (por costo, distancia, fecha, etc.)
+     */
     public static void ordenarPorInsercion(List<Pedido> lista, Comparator<Pedido> comparador) {
         int n = lista.size();
 
