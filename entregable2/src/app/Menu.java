@@ -49,6 +49,9 @@ public class Menu {
                 System.out.println("Capacidad excedida: " + e.getMessage());
             } catch (EstadoInvalidoException e) {
                 System.out.println("Estado inválido: " + e.getMessage());
+            } catch (SinPedidosPendientesException e) {
+                System.out.println("Sin pedidos pendientes: " + e.getMessage());
+
             } catch (IllegalArgumentException e) {
                 System.out.println("Dato inválido: " + e.getMessage());
             } catch (IllegalStateException e) {
@@ -104,7 +107,7 @@ public class Menu {
             case 6:
                 
                 gestor.deshacerUltimaOperacion();
-                System.out.println("✅ Operación deshecha correctamente.");
+                System.out.println("Operación deshecha correctamente.");
                 break;
             case 7:
                 ordenarYListarPedidos();
@@ -179,12 +182,14 @@ public class Menu {
     }
 
     /**
-     * Opción 1: Solicita los datos y registra un nuevo cliente en el gestor.
+     * //* Opción 1: Gestión de clientes (alta, baja, búsqueda y listado ordenado
+     * por código).
      * 
      * @throws AlmacenamientoLlenoException si el arreglo de clientes llegó al
      *                                      límite
      */
-    private void registrarCliente() throws Exception {
+
+    private void gestionClientes() throws Cliente {
         System.out.println("\n--- GESTIÓN DE CLIENTES ---");
         System.out.println("1. Alta de cliente");
         System.out.println("2. Baja de cliente");
@@ -203,7 +208,7 @@ public class Menu {
         } else if (sub == 2) {
             int codigo = leerEntero("Código:");
             gestor.eliminarCliente(codigo);
-            System.out.println("✅ Cliente eliminado con éxito.");
+            System.out.println("Cliente eliminado con éxito.");
         } else if (sub == 3) {
             int codigo = leerEntero("Código a buscar: ");
             Cliente c = gestor.buscarCliente(codigo);
@@ -218,8 +223,7 @@ public class Menu {
     }
 
     /**
-     * Opción 2: Solicita los datos y registra un nuevo repartidor con su respectivo
-     * vehículo.
+     * Opción 2: Gestión de repartidores (alta y listado).
      * 
      * 
      */
@@ -233,7 +237,7 @@ public class Menu {
             String legajo = leerTexto("Legajo: ");
             String nombre = leerTexto("Nombre: ");
             int tipo = leerEntero(
-                    "Ingrese el número correspondiente al tipo de vehículo: 1. Bicicleta, 2. Moto, 3. Camioneta: ");
+                    "Ingrese el número correspondiente al tipo de vehículo: 1.Bicicleta, 2. Moto, 3. Camioneta: ");
             String patente = leerTexto("Patente: ");
 
             Vehiculo vehiculo;
@@ -250,25 +254,26 @@ public class Menu {
                 default:
                     throw new IllegalArgumentException("Tipo de vehículo inválido.");
             }
+            System.out.println("Repartidor registrado exitosamente.");
+
+        } else if (sub == 2) {
+            System.out.println("\n--- LISTADO DE REPARTIDORES ---");
+            System.out.println(gestor.listarRepartidores());
 
         }
 
-        Repartidor repartidor = new Repartidor(legajo, nombre, vehiculo);
-        gestor.registrarRepartidor(repartidor);
-        System.out.println("Repartidor registrado exitosamente.");
     }
 
     /**
-     * Opción 3: Solicita los datos para registrar un pedido normal, urgente o
-     * frágil.
+     * Opción 3: Registrar un pedido (lo encola y registra en la pila).
      * 
-     * @throws AlmacenamientoLlenoException si el arreglo de pedidos llegó al límite
+     * 
      * @throws ClienteNoEncontradoException si el código de cliente ingresado no
      *                                      existe
      * @throws PedidoInvalidoException      si los datos del pedido son inválidos
      */
     private void registrarPedido()
-            throws AlmacenamientoLlenoException, ClienteNoEncontradoException, PedidoInvalidoException {
+            throws ClienteNoEncontradoException, PedidoInvalidoException {
         System.out.println("\n--- Registrar Pedido ---");
         String codigo = leerTexto("Código del pedido: ");
         int codigoCliente = leerEntero("Código del cliente: ");
@@ -297,58 +302,32 @@ public class Menu {
     }
 
     /**
-     * Opción 4: Asigna un pedido existente a un repartidor, validando capacidad y
-     * restricciones,
-     * e implementa un bloque {@code finally} para garantizar la consulta del estado
-     * posterior.
+     * 4- Atender el siguiente pedido (saca de la cola con prioridad y pone en
+     * camino).
      * 
-     * @throws AlmacenamientoLlenoException si el repartidor alcanzó su tope de
-     *                                      pedidos
-     * @throws CapacidadExcedidaException   si el vehículo no puede soportar el
-     *                                      pedido
+     * 
+     * @throws SinpedidosException
      */
-    private void asignarPedido() throws AlmacenamientoLlenoException, CapacidadExcedidaException {
-        System.out.println("\n--- Asignar Pedido a Repartidor ---");
-        String codigoPedido = leerTexto("Código del pedido: ");
-        String legajoRepartidor = leerTexto("Legajo del repartidor: ");
-
-        gestor.buscarPedido(codigoPedido);
-
-        try {
-            gestor.asignarPedido(codigoPedido, legajoRepartidor);
-            System.out.println("Pedido asignado exitosamente.");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error al asignar pedido: " + e.getMessage());
-        } finally {
-            System.out.println(gestor.consultarEstadoPedido(codigoPedido));
-        }
+    private void atenderSiguientePedido() throws SinPedidosPendientesException, CapacidadExcedidaException {
+        System.out.println("\n--- Atender Siguiente Pedido ---");
+        String legajo = leerTexto("Legajo del repartidor que atenderá: ");
+        gestor.atenderSiguientePedido(legajo);
+        System.out.println("Siguiente pedido atendido, asignado y puesto en camino.");
     }
 
     /**
-     * Opción 5: Modifica el estado de un pedido (en camino, entregado o cancelado)
-     * validando las transiciones permitidas.
+     * 5: Registrar una entrega y actualizar historial/estado.
      */
-    private void cambiarEstadoPedido() {
-        System.out.println("\n--- Cambiar Estado de Pedido ---");
-        String codigoPedido = leerTexto("Código del pedido: ");
-        int opcion = leerEntero("Nuevo estado (1. En camino, 2. Entregado, 3. Cancelado): ");
+    private void registrarEntrega() {
+        System.out.println("\n--- REGISTRAR ENTREGA ---");
+        String codPedido = leerTexto("Código del pedido entregado: ");
+        String legajo = leerTexto("Legajo del repartidor: ");
 
-        String nuevoEstado;
-        switch (opcion) {
-            case 1:
-                nuevoEstado = Pedido.EN_CAMINO;
-                break;
-            case 2:
-                nuevoEstado = Pedido.ENTREGADO;
-                break;
-            case 3:
-                nuevoEstado = Pedido.CANCELADO;
-                break;
-            default:
-                throw new IllegalArgumentException("Opción de estado inválida.");
-        }
-        gestor.cambiarEstadoPedido(codigoPedido, nuevoEstado);
-        System.out.println("Estado del pedido cambiado exitosamente.");
+        Pedido p = gestor.buscarPedido(codPedido);
+        Repartidor r = gestor.buscarRepartidor(legajo);
+
+        r.registrarEntrega(p);
+        System.out.println("Entrega registrada correctamente.");
     }
 
     /**
@@ -378,50 +357,105 @@ public class Menu {
     }
 
     /**
-     * Opción 7: Lista todos los pedidos registrados mostrando su costo y tiempo
-     * estimado (polimorfismo).
+     * Opción 7: ordenar y listar pedidos eligiendo criterio y algoritmo.
      */
-    private void listarPedidos() {
-        System.out.println("\n--- Listado Pedidos ---");
-        String listado = gestor.listarPedidos();
-        if (listado.isEmpty()) {
+    private void ordenarYListarPedidos() {
+        System.out.println("\n--- Ordenar y Listar Pedidos ---");
+        List<Pedido> copiaPedidos = new ArrayList<>(gestor.getPedidos());
+
+        if (copiaPedidos.isEmpty()) {
             System.out.println("No hay pedidos registrados.");
+            return;
+        }
+        int criterioOpt = leerEntero("Criterio de orden (1. Costo, 2. Distancia, 3. Fecha): ");
+        int algoOpt = leerEntero("Algoritmo a usar (1. Burbuja, 2. Inserción): ");
+
+        Comparator<Pedido> comparador;
+        if (criterioOpt == 1) {
+            comparador = (p1, p2) -> Double.compare(p1.calcularImporte(), p2.calcularImporte());
         } else {
-            System.out.print(listado);
+            if (criterioOpt == 2) {
+                comparador = (p1, p2) -> Double.compare(p1.getDistanciaKm(), p2.getDistanciaKm());
+            } else {
+                comparador = Comparator.comparing(Pedido::getFechaHora);
+            }
+        }
+
+        if (algoOpt == 1) {
+            Ordenador.ordenarBurbuja(copiaPedidos, comparador);
+            System.out.println("-> Ordenado por Método de Burbuja:");
+        } else {
+            Ordenador.ordenarPorInsercion(copiaPedidos, comparador);
+            System.out.println("-> Ordenado por Método de Inserción:");
+        }
+
+        for (Pedido p : copiaPedidos) {
+            System.out.println(
+                    " - " + p + " | Importe: $" + p.calcularImporte() + " | Distancia: " + p.getDistanciaKm() + "km");
         }
     }
 
     /**
-     * Opción 8: Consulta y despliega el estado actual de un pedido o un repartidor
-     * haciendo uso de la interfaz {@link Rastreable}.
+     * Opción 8: Buscar un pedido por código (Lineal o Binaria).
      */
-    private void consultarEstado() {
-        System.out.println("\n--- Consultar Estado ---");
-        int forma = leerEntero("Consultar estado de (1. Pedido, 2. Repartidor): ");
+    private void buscarPedidoAlgoritmo() {
+        System.out.println("\n--- Buscar Pedido ---");
+        String codigo = leerTexto("Ingrese el código del pedido a buscar: ");
+        int metodo = leerEntero("Método de búsqueda (1. Lineal, 2. Binaria): ");
 
-        switch (forma) {
-            case 1:
-                String codigo = leerTexto("Ingrese el código del pedido: ");
-                System.out.println(gestor.consultarEstadoPedido(codigo));
-                break;
-            case 2:
-                String legajo = leerTexto("Ingrese el legajo del repartidor: ");
-                System.out.println(gestor.consultarEstadoRepartidor(legajo));
-                break;
-            default:
-                throw new IllegalArgumentException("Opción inválida.");
+        List<Pedido> lista = gestor.getPedidos();
+        Pedido encontrado = null;
+
+        if (metodo == 1) {
+            encontrado = Buscador.busquedaLinealPedido(lista, codigo);
+        } else {
+            if (metodo == 2) {
+                List<Pedido> ordenada = new ArrayList<>(lista);
+                Ordenador.ordenarBurbuja(ordenada, Comparator.comparing(Pedido::getCodigo));
+                encontrado = Buscador.busquedaBinariaPedido(ordenada, codigo);
+            } else {
+                System.out.println("Método de búsqueda inválido.");
+                return;
+            }
+        }
+
+        if (encontrado != null) {
+            System.out.println("Pedido encontrado: " + encontrado);
+        } else {
+            System.out.println("Pedido con código " + codigo + " no encontrado.");
         }
     }
 
     /**
-     * Opción 9: Muestra el importe total monetario de los pedidos y las comisiones
-     * calculadas para cada repartidor mediante la interfaz {@link Facturable}.
+     * Opción 9: Intercalar los pedidos de dos turnos.
      */
-    private void verImportes() {
-        System.out.println("\n--- Importes ---");
-        double totalPedidos = gestor.calcularImporteTotal();
-        System.out.println("Importe total de los pedidos: $" + totalPedidos);
-        System.out.println("Comisiones de los repartidores:");
-        System.out.println(gestor.listarComisiones());
+    private void intercalarPedidosTurnos() {
+        System.out.println("\n--- Intercalar Pedidos de Dos Turnos ---");
+        List<Pedido> todos = gestor.getPedidos();
+        if (todos.size() < 2) {
+            System.out.println("Se necesitan al menos 2 pedidos registrados para intercalar.");
+            return;
+        }
+
+        List<Pedido> turno1 = new ArrayList<>();
+        List<Pedido> turno2 = new ArrayList<>();
+
+        for (int i = 0; i < todos.size(); i++) {
+            if (i % 2 == 0) {
+                turno1.add(todos.get(i));
+            } else {
+                turno2.add(todos.get(i));
+            }
+        }
+
+        Comparator<Pedido> comp = Comparator.comparing(Pedido::getCodigo);
+        Ordenador.ordenarBurbuja(turno1, comp);
+        Ordenador.ordenarBurbuja(turno2, comp);
+
+        List<Pedido> resultado = Intercalador.intercalarListas(turno1, turno2, comp);
+        System.out.println("\n✅ Listado combinado e intercalado con éxito:");
+        for (Pedido p : resultado) {
+            System.out.println(" - " + p.getCodigo());
+        }
     }
 }
