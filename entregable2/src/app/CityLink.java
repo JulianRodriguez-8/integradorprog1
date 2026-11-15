@@ -42,6 +42,7 @@ public class CityLink {
         this.colaNormales = new ArrayDeque<>();
         this.historial = new ArrayDeque<>();
 
+
     }
 
     /**
@@ -331,7 +332,7 @@ public class CityLink {
      *                                       soporta el pedido
      */
     public void atenderSiguientePedido(String legajoRepartidor)
-            throws SinPedidosPendientesException, CapacidadExcedidaException {
+            throws SinPedidosPendientesException, CapacidadExcedidaException, EstadoInvalidoException {
         Pedido pedidoAAtender = colaUrgentes.poll(); // lee al primer elemento de la fila y lo saca de la cola para que
                                                      // el que estaba atrás pase a ser el primero.
         if (pedidoAAtender == null) {
@@ -343,7 +344,10 @@ public class CityLink {
 
         Repartidor repartidor = buscarRepartidor(legajoRepartidor);
         repartidor.asignarPedido(pedidoAAtender);
+
+        String estadoViejo=pedidoAAtender.getEstado();
         pedidoAAtender.cambiarEstado(Pedido.EN_CAMINO);
+        historial.push(new Operacion("CAMBIO_ESTADO", pedidoAAtender, estadoViejo, null));
 
     }
 
@@ -375,8 +379,44 @@ public class CityLink {
             // Para deshacer un cambio de estado, le devolvemos su estado viejo
             p.cambiarEstado(ultima.getEstadoAnterior());
             System.out.println("Se deshizo el cambio de estado. El pedido " + p.getCodigo() +
-            " volvió a " + ultima.getEstadoAnterior());
+                    " volvió a " + ultima.getEstadoAnterior());
         }
+    }
+
+    /**
+     * Genera un listado en formato de texto con todos los repartidores registrados.
+     * 
+     * @return cadena con el detalle de los repartidores
+     */
+    public String listarRepartidores() {
+        String resultado = "";
+        for (Repartidor r : repartidores) {
+            resultado += "Legajo: " + r.getLegajo() + " - Nombre: " + r.getNombre() + "\n";
+        }
+        return resultado;
+    }
+
+    /**
+     * Retorna la lista general de pedidos registrados en el sistema.
+     * 
+     * @return List<Pedido> con todos los pedidos
+     */
+    public List<Pedido> getPedidos() {
+        return this.pedidos;
+    }
+
+     /**
+     * Retorna un listado de todos los clientes ordenados por su código.
+     * 
+     * @return cadena con el detalle de cada cliente
+     */
+    public String listarClientesOrdenados() {
+        String resultado = "";
+        for (Integer codigo : clientes.keySet()) {
+            Cliente c = clientes.get(codigo);
+            resultado += "Código: " + codigo + " - " + c.toString() + "\n";
+        }
+        return resultado;
     }
 
     /**

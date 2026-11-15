@@ -39,8 +39,6 @@ public class Menu {
             opcion = leerEntero("Opción: ");
             try {
                 ejecutar(opcion);
-            } catch (AlmacenamientoLlenoException e) {
-                System.out.println("Almacenamiento lleno: " + e.getMessage());
             } catch (ClienteNoEncontradoException e) {
                 System.out.println("Cliente no encontrado: " + e.getMessage());
             } catch (PedidoInvalidoException e) {
@@ -86,7 +84,7 @@ public class Menu {
      * @throws PedidoInvalidoException si los datos del pedido son incorrectos
      * @throws CapacidadExcedidaException si se supera la capacidad de carga del vehículo
      */
-    private void ejecutar(int opcion) throws AlmacenamientoLlenoException,
+    private void ejecutar(int opcion) throws SinPedidosPendientesException,
             ClienteNoEncontradoException, PedidoInvalidoException, CapacidadExcedidaException {
         switch (opcion) {
             case 1:
@@ -112,7 +110,7 @@ public class Menu {
             case 7:
                 ordenarYListarPedidos();
                 break;  
-            case: 8
+            case 8:
                 buscarPedidoAlgoritmo();
                 break;
             case 9:
@@ -185,11 +183,10 @@ public class Menu {
      * //* Opción 1: Gestión de clientes (alta, baja, búsqueda y listado ordenado
      * por código).
      * 
-     * @throws AlmacenamientoLlenoException si el arreglo de clientes llegó al
-     *                                      límite
+    
      */
 
-    private void gestionClientes() throws Cliente {
+    private void gestionClientes() throws ClienteNoEncontradoException {
         System.out.println("\n--- GESTIÓN DE CLIENTES ---");
         System.out.println("1. Alta de cliente");
         System.out.println("2. Baja de cliente");
@@ -203,8 +200,10 @@ public class Menu {
             String nombre = leerTexto("Nombre: ");
             String telefono = leerTexto("Teléfono: ");
             String zona = leerTexto("Zona: ");
+
             gestor.registrarCliente(new Cliente(codigo, nombre, telefono, zona));
             System.out.println("Cliente registrado con éxito");
+
         } else if (sub == 2) {
             int codigo = leerEntero("Código:");
             gestor.eliminarCliente(codigo);
@@ -227,7 +226,7 @@ public class Menu {
      * 
      * 
      */
-    private void gestionRepartidores() throws Exception {
+    private void gestionRepartidores()   {
         System.out.println("\n--- GESTIÓN DE REPARTIDORES ---");
         System.out.println("1. Registrar repartidor");
         System.out.println("2. Listar repartidores");
@@ -254,6 +253,8 @@ public class Menu {
                 default:
                     throw new IllegalArgumentException("Tipo de vehículo inválido.");
             }
+            Repartidor repartidor = new Repartidor(legajo, nombre, vehiculo);
+            gestor.registrarRepartidor(repartidor);
             System.out.println("Repartidor registrado exitosamente.");
 
         } else if (sub == 2) {
@@ -336,25 +337,7 @@ public class Menu {
      * @throws ClienteNoEncontradoException si el cliente no es hallado en el
      *                                      sistema
      */
-    private void buscarCliente() throws ClienteNoEncontradoException {
-        System.out.println("\n--- Buscar Cliente ---");
-        int forma = leerEntero("Buscar por (1. Código, 2. Nombre): ");
-
-        Cliente cliente;
-        switch (forma) {
-            case 1:
-                int codigo = leerEntero("Ingrese el código del cliente: ");
-                cliente = gestor.buscarCliente(codigo);
-                break;
-            case 2:
-                String nombre = leerTexto("Ingrese el nombre del cliente: ");
-                cliente = gestor.buscarCliente(nombre);
-                break;
-            default:
-                throw new IllegalArgumentException("Opción inválida.");
-        }
-        System.out.println("Cliente encontrado: " + cliente.toString());
-    }
+   
 
     /**
      * Opción 7: ordenar y listar pedidos eligiendo criterio y algoritmo.
@@ -453,7 +436,7 @@ public class Menu {
         Ordenador.ordenarBurbuja(turno2, comp);
 
         List<Pedido> resultado = Intercalador.intercalarListas(turno1, turno2, comp);
-        System.out.println("\n✅ Listado combinado e intercalado con éxito:");
+        System.out.println("\n Listado combinado e intercalado con éxito:");
         for (Pedido p : resultado) {
             System.out.println(" - " + p.getCodigo());
         }
