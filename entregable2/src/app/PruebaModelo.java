@@ -97,9 +97,7 @@ public class PruebaModelo {
                 System.out.println("Error esperado: " + e.getMessage());
             }
 
-        } catch (AlmacenamientoLlenoException e) {
-            System.out.println("Almacenamiento lleno: " + e.getMessage());
-        } catch (ClienteNoEncontradoException e) {
+        }  catch (ClienteNoEncontradoException e) {
             System.out.println("Cliente no encontrado: " + e.getMessage());
         }
 
@@ -124,9 +122,7 @@ public class PruebaModelo {
             System.out.println(rep.obtenerEstadoActual());
         } catch (CapacidadExcedidaException e) {
             System.out.println("Capacidad excedida: " + e.getMessage());
-        } catch (AlmacenamientoLlenoException e) {
-            System.out.println("Almacenamiento lleno: " + e.getMessage());
-        } catch (PedidoInvalidoException e) {
+        }  catch (PedidoInvalidoException e) {
             System.out.println("Pedido inválido: " + e.getMessage());
         }
 
@@ -163,9 +159,7 @@ public class PruebaModelo {
                 System.out.println("Error esperado: " + e.getMessage());
             }
 
-        } catch (AlmacenamientoLlenoException e) {
-            System.out.println("Almacenamiento lleno: " + e.getMessage());
-        } catch (ClienteNoEncontradoException e) {
+        }  catch (ClienteNoEncontradoException e) {
             System.out.println("Cliente no encontrado: " + e.getMessage());
         } catch (PedidoInvalidoException e) {
             System.out.println("Pedido inválido: " + e.getMessage());
@@ -204,8 +198,6 @@ public class PruebaModelo {
             gestor.buscarRepartidor("L-1").registrarEntrega(gestor.buscarPedido("N-1"));
             System.out.print(gestor.listarComisiones()); // comisión $220.0
 
-        } catch (AlmacenamientoLlenoException e) {
-            System.out.println("Almacenamiento lleno: " + e.getMessage());
         } catch (ClienteNoEncontradoException e) {
             System.out.println("Cliente no encontrado: " + e.getMessage());
         } catch (PedidoInvalidoException e) {
@@ -242,9 +234,7 @@ public class PruebaModelo {
             gestor.eliminarCliente(3); // el último, que ahora es el único
         } catch (ClienteNoEncontradoException e) {
             System.out.println("Error: " + e.getMessage());
-        } catch (AlmacenamientoLlenoException e) {
-            System.out.println("Almacenamiento lleno: " + e.getMessage());
-        }
+        } 
 
     }
 }

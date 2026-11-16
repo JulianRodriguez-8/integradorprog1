@@ -223,6 +223,16 @@ public abstract class Pedido implements Rastreable, Facturable {
         return false;
     }
 
+
+    /**
+     * Fuerza el cambio de estado sin validar reglas de transición (utilizado exclusivamente para la Pila de Deshacer).
+     * 
+     * @param nuevoEstado el estado a forzar
+     */
+    public void forzarEstado(String nuevoEstado) {
+        this.estado = nuevoEstado;
+    }
+
     /**
      * Obtiene el estado actual del pedido implementando la interfaz {@link Rastreable}.
      * 

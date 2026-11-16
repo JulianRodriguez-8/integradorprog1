@@ -377,7 +377,7 @@ public class CityLink {
 
         } else if (ultima.getTipoAccion().equals("CAMBIO_ESTADO")) {
             // Para deshacer un cambio de estado, le devolvemos su estado viejo
-            p.cambiarEstado(ultima.getEstadoAnterior());
+            p.forzarEstado(ultima.getEstadoAnterior());
             System.out.println("Se deshizo el cambio de estado. El pedido " + p.getCodigo() +
                     " volvió a " + ultima.getEstadoAnterior());
         }
