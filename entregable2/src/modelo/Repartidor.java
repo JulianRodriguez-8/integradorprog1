@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * Representa a un repartidor de la empresa CityLink.
- * Cuenta con un legajo, un nombre, un vehículo asignado y un arreglo de pedidos
+ * Cuenta con un legajo, un nombre, un vehículo asignado y una lista dinamica de pedidos
  * a su cargo.
  * Implementa las interfaces {@link Rastreable} y {@link Facturable}.
  */
@@ -110,8 +110,7 @@ public class Repartidor implements Rastreable, Facturable {
     }
 
     /**
-     * Asigna un pedido al repartidor validando la capacidad del vehículo indicado y
-     * el límite de almacenamiento.
+     * Asigna un pedido al repartidor validando la capacidad del vehículo indicado 
      * 
      * @param pedido   pedido que se desea asignar
      * @param vehiculo vehículo con el cual se evaluarán las restricciones de

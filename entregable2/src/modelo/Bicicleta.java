@@ -34,7 +34,7 @@ public class Bicicleta extends Vehiculo {
     /**
      * Verifica si la bicicleta puede transportar un pedido determinado.
      * Redefine el método para rechazar explícitamente los pedidos frágiles y 
-     * validar que el peso no supere la capacidad máxima de la bicicleta[cite: 2, 3].
+     * validar que el peso no supere la capacidad máxima de la bicicleta
      * 
      * @param pedido pedido que se quiere evaluar para el transporte
      * @return {@code true} si el pedido no es frágil y cumple con la capacidad de peso, {@code false} en caso contrario

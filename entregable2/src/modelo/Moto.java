@@ -23,7 +23,7 @@ public class Moto extends Vehiculo {
     /**
      * Calcula el tiempo estimado de entrega para una moto en minutos.
      * Se obtiene dividiendo la distancia entre la velocidad, multiplicando por 60 
-     * y sumando los 5 minutos extra correspondientes al estacionamiento[cite: 1, 2].
+     * y sumando los 5 minutos extra correspondientes al estacionamiento
      * 
      * @param distanciaKm distancia a recorrer en kilómetros
      * @return el tiempo estimado de entrega en minutos

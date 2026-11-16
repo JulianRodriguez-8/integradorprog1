@@ -110,7 +110,7 @@ public abstract class Vehiculo {
      * @param km distancia a recorrer en kilómetros
      * @return el tiempo estimado en minutos
      */
-    // metodo abstracto
+    
   public abstract double calcularTiempoEntrega(double km);
 
   /**
