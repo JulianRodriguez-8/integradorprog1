@@ -333,10 +333,12 @@ public class CityLink {
      */
     public void atenderSiguientePedido(String legajoRepartidor)
             throws SinPedidosPendientesException, CapacidadExcedidaException, EstadoInvalidoException {
-        Pedido pedidoAAtender = colaUrgentes.poll(); // lee al primer elemento de la fila y lo saca de la cola para que
-                                                     // el que estaba atrás pase a ser el primero.
+               boolean esUrgente=true;
+        Pedido pedidoAAtender = colaUrgentes.peek(); // lee al primer elemento de la fila sin sacarlo por si falla la capacid.
+                                                     
         if (pedidoAAtender == null) {
-            pedidoAAtender = colaNormales.poll();
+            esUrgente=false;
+            pedidoAAtender = colaNormales.peek();
         }
         if (pedidoAAtender == null) {
             throw new SinPedidosPendientesException("No hay pedidos pendientes para atender");
@@ -344,6 +346,11 @@ public class CityLink {
 
         Repartidor repartidor = buscarRepartidor(legajoRepartidor);
         repartidor.asignarPedido(pedidoAAtender);
+        if (esUrgente){
+            colaUrgentes.poll();
+        }else {
+            colaNormales.poll();
+        }
 
         String estadoViejo=pedidoAAtender.getEstado();
         pedidoAAtender.cambiarEstado(Pedido.EN_CAMINO);
@@ -467,6 +474,13 @@ public class CityLink {
         cambiarEstadoPedido("P-1", Pedido.EN_CAMINO);
         buscarRepartidor("L-1").registrarEntrega(buscarPedido("P-1"));
         cambiarEstadoPedido("P-3", Pedido.EN_CAMINO);
+
+
+        // Limpiamos de las colas los pedidos que ya fueron asignados en la precarga
+        colaUrgentes.clear();
+        colaNormales.clear();
+        colaNormales.offer(buscarPedido("P-5"));
+        colaNormales.offer(buscarPedido("P-8"));
     }
 
 }
