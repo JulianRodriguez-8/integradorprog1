@@ -9,8 +9,7 @@ import java.util.Comparator;
  * (Burbuja e Inserción), permitiendo ordenar listas de pedidos mediante
  * distintos criterios.
  * 
- * @version 2.0
- * @author Grupo CityLink
+
  */
 
 public class Ordenador {
@@ -21,8 +20,7 @@ public class Ordenador {
      * incorrecto.
      * 
      * @param lista      la lista de pedidos a ordenar
-     * @param comparador el criterio de ordenamiento (por costo, distancia, fecha,
-     *                   etc.)
+     * @param comparador el criterio de ordenamiento (por costo, distancia, fecha, etc.)
      */
 
     public static void ordenarBurbuja(List<Pedido> lista, Comparator<Pedido> comparador) {
@@ -42,7 +40,7 @@ public class Ordenador {
                     huboCambios = true;
                 }
             }
-            // Optimización: si en una vuelta completa no hubo cambios, la lista ya está ordenada
+            // si en una vuelta completa no hubo cambios, la lista ya está ordenada
             if (!huboCambios) {
                 break;
             }

@@ -2,7 +2,7 @@
 
 package app;
 
-import excepciones.AlmacenamientoLlenoException;
+
 import excepciones.CapacidadExcedidaException;
 import excepciones.EstadoInvalidoException;
 import excepciones.PedidoInvalidoException;

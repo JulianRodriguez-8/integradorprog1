@@ -184,13 +184,11 @@ public class CityLink {
 
     /**
      * Asigna un pedido a un repartidor específico, validando que el pedido no se
-     * encuentre asignado previamente.
+     * encuentre asignado previamente y que el vehículo soporte la carga.
      * 
      * @param codigoPedido código del pedido a asignar
-     * @param legajo       legajo del repartidor receptor
-     * @throws CapacidadExcedidaException si el vehículo no puede transportar el
-     *                                    pedido
-     * 
+     * @param legajo legajo del repartidor receptor
+     * @throws CapacidadExcedidaException si el vehículo no puede transportar el pedido
      * @throws IllegalArgumentException   si el pedido ya se encuentra asignado
      */
     public void asignarPedido(String codigoPedido, String legajo)
@@ -261,8 +259,8 @@ public class CityLink {
      * 
      * @param codigoPedido código del pedido a modificar
      * @param nuevoEstado  nuevo estado a establecer
-     * @throws IllegalArgumentException si el pedido no posee repartidor asignado al
-     *                                  intentar cambiar de estado
+     * @throws IllegalArgumentException si el pedido no existe o no posee repartidor asignado
+     * @throws EstadoInvalidoException  si la transición de estado no está permitida
      */
     public void cambiarEstadoPedido(String codigoPedido, String nuevoEstado) {
         Pedido pedido = buscarPedido(codigoPedido);
@@ -283,6 +281,7 @@ public class CityLink {
      * 
      * @param codigoPedido código del pedido a consultar
      * @return cadena con el estado actual del pedido
+     * @throws IllegalArgumentException si el pedido no existe
      */
     public String consultarEstadoPedido(String codigoPedido) {
         Rastreable r = buscarPedido(codigoPedido);
@@ -295,6 +294,7 @@ public class CityLink {
      * 
      * @param legajo legajo del repartidor a consultar
      * @return cadena con el estado actual del repartidor
+     * @throws IllegalArgumentException si el repartidor no existe
      */
     public String consultarEstadoRepartidor(String legajo) {
         Rastreable r = buscarRepartidor(legajo);
@@ -318,17 +318,20 @@ public class CityLink {
 
     /**
      * Atiende el siguiente pedido pendiente, priorizando la cola de urgentes.
-     * Lo extrae de la cola, lo asigna a un repartidor y lo pone en camino.
+     * Consulta el frente de la cola sin extraerlo ({@code peek}) hasta validar la capacidad
+     * del vehículo, lo asigna al repartidor, lo extrae ({@code poll}), cambia su estado a
+     * {@link Pedido#EN_CAMINO} y registra la acción en el historial.
      * 
      * @param legajoRepartidor legajo del repartidor que tomará el pedido
      * @throws SinPedidosPendientesException si ambas colas están vacías
      * @throws CapacidadExcedidaException si el vehículo del repartidor no soporta el pedido
      * @throws EstadoInvalidoException si el pedido no admite la transición a EN_CAMINO
+     * @throws IllegalArgumentException      si el repartidor no existe
      */
     public void atenderSiguientePedido(String legajoRepartidor)
             throws SinPedidosPendientesException, CapacidadExcedidaException, EstadoInvalidoException {
                boolean esUrgente=true;
-        Pedido pedidoAAtender = colaUrgentes.peek(); // lee al primer elemento de la fila sin sacarlo por si falla la capacid.
+        Pedido pedidoAAtender = colaUrgentes.peek(); 
                                                      
         if (pedidoAAtender == null) {
             esUrgente=false;

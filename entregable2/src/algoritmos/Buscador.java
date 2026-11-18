@@ -5,11 +5,8 @@ import modelo.Cliente;
 import java.util.List;
 
 /**
- * Contiene los algoritmos de búsqueda lineal y binaria implementados desde
- * cero,
- * 
- * @version 2.0
- * @author Grupo CityLink
+ * Contiene los algoritmos de búsqueda lineal y binaria implementados desde cero
+ * para localizar pedidos y clientes dentro de listas dinámicas ({@link List}).
  */
 
 public class Buscador {
@@ -17,7 +14,7 @@ public class Buscador {
      * Búsqueda lineal de un pedido por su código dentro de una lista.
      * Recorre elemento por elemento desde el principio hasta el final.
      * 
-     * @ lista de pedidos donde se realizará la búsqueda
+     * @param lista  lista de pedidos donde se realizará la búsqueda
      * 
      * @param codigo código alfanumérico del pedido a buscar
      * @return el Pedido encontrado, o null si no existe
@@ -28,7 +25,7 @@ public class Buscador {
         while (i < lista.size() && encontrado == null) {
             Pedido p = lista.get(i);
             if (p.getCodigo().equals(codigo)) {
-                encontrado = p; // ¡Lo encontramos!
+                encontrado = p; // encuentra
             }
             i++;
         }
@@ -37,7 +34,7 @@ public class Buscador {
     }
 
     /**
-     * Búsqueda lineal de un cliente por su nombre 
+     * Búsqueda lineal de un cliente por su nombre
      * 
      * 
      * @param lista  lista de clientes a recorrer
@@ -54,10 +51,10 @@ public class Buscador {
         return null;
     }
 
-
     /**
-     * Búsqueda binaria de un pedido por su código en una lista previamente ordenada.
-     
+     * Búsqueda binaria de un pedido por su código en una lista previamente
+     * ordenada.
+     * 
      * @param listaOrdenada lista de pedidos ordenada alfabéticamente por código
      * @param codigoBuscado código que se desea encontrar
      * @return el Pedido encontrado, o null si no existe
@@ -70,8 +67,8 @@ public class Buscador {
         while (inicio <= fin && encontrado == null) {
             int medio = inicio + (fin - inicio) / 2; // Posición central
             Pedido medioPedido = listaOrdenada.get(medio);
-            
-            // Comparamos los códigos alfanuméricamente
+
+            // Comparalos códigos alfanuméricamente
             int comparacion = medioPedido.getCodigo().compareTo(codigoBuscado);
 
             if (comparacion == 0) {
@@ -79,10 +76,9 @@ public class Buscador {
             } else if (comparacion < 0) {
                 inicio = medio + 1; // descarto la mitad izquierda
             } else {
-                fin = medio - 1;    // descarto la mitad derecha
+                fin = medio - 1; // descarto la mitad derecha
             }
         }
         return encontrado;
     }
 }
-
