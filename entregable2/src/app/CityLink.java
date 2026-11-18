@@ -19,9 +19,7 @@ import java.util.Queue; //cola
  * TreeMap para clientes, ArrayList para pedidos y repartidores)
  * implementa las reglas de negocio, el registro, las búsquedas, las
  * asignaciones y la carga de datos de prueba.
- * 
- * @version 2.0
- * @author Grupo CityLink
+ 
  */
 public class CityLink {
     // reemplazo los arreglos
@@ -101,7 +99,7 @@ public class CityLink {
     }
 
     /**
-     * Registra un nuevo repartidor en el sistema validando la capacidad máxima
+     * Registra un nuevo repartidor en el sistema 
      * y que no exista un legajo duplicado.
      * 
      * @param repartidor el objeto Repartidor a registrar
@@ -121,15 +119,11 @@ public class CityLink {
     }
 
     /**
-     * Registra un nuevo pedido verificando el límite de almacenamiento,
-     * la existencia previa del cliente asociado y la unicidad del código de pedido.
-     * 
+     * Registra un nuevo pedido verificando la existencia previa del cliente asociado y la unicidad del código de pedido.
+     * Encola el pedido según su prioridad (urgente o normal) y registra la operación en el historial.
      * @param pedido el objeto Pedido a registrar
-     * @throws PedidoInvalidoException      si el código del pedido ya está
-     *                                      duplicado
-     * @throws ClienteNoEncontradoException si el cliente asociado no existe en el
-     *                                      sistema
-     * 
+     * @throws PedidoInvalidoException      si el código del pedido ya está duplicado
+     * @throws ClienteNoEncontradoException si el cliente asociado no existe en el sistema
      */
     public void registrarPedido(Pedido pedido)
             throws PedidoInvalidoException, ClienteNoEncontradoException {
@@ -328,8 +322,8 @@ public class CityLink {
      * 
      * @param legajoRepartidor legajo del repartidor que tomará el pedido
      * @throws SinPedidosPendientesException si ambas colas están vacías
-     * @throws CapacidadExcedidaException    si el vehículo del repartidor no
-     *                                       soporta el pedido
+     * @throws CapacidadExcedidaException si el vehículo del repartidor no soporta el pedido
+     * @throws EstadoInvalidoException si el pedido no admite la transición a EN_CAMINO
      */
     public void atenderSiguientePedido(String legajoRepartidor)
             throws SinPedidosPendientesException, CapacidadExcedidaException, EstadoInvalidoException {

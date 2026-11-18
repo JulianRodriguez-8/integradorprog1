@@ -68,7 +68,7 @@ public class Menu {
         System.out.println("3. Registrar pedido(normal,urgente o frágil)");
         System.out.println("4. Atender siguiente pedido");
         System.out.println("5. Registrar entrega de pedido");
-        System.out.println("6. Deshacer última opearación");
+        System.out.println("6. Deshacer última operación");
         System.out.println("7. Ordenar y listar pedidos");
         System.out.println("8. Buscar pedido por código");
         System.out.println("9. Intercalar pedidos de dos turnos");
@@ -76,20 +76,24 @@ public class Menu {
     }
 
     /**
-     * Dirige la ejecución hacia el método correspondiente según la opción elegida en el menú.
+     * Dirige la ejecución hacia el método correspondiente según la opción elegida
+     * en el menú.
      * 
      * @param opcion número entero que representa la opción del menú seleccionado
-     
-     * @throws ClienteNoEncontradoException si no se halla el cliente asociado
-     * @throws PedidoInvalidoException si los datos del pedido son incorrectos
-     * @throws CapacidadExcedidaException si se supera la capacidad de carga del vehículo
+     * 
+     * @throws ClienteNoEncontradoException  si no se halla el cliente asociado
+     * @throws PedidoInvalidoException       si los datos del pedido son incorrectos
+     * @throws CapacidadExcedidaException    si se supera la capacidad de carga del
+     *                                       vehículo
+     * @throws SinPedidosPendientesException si se intenta atender un pedido con las
+     *                                       colas vacías
      */
     private void ejecutar(int opcion) throws SinPedidosPendientesException,
             ClienteNoEncontradoException, PedidoInvalidoException, CapacidadExcedidaException {
         switch (opcion) {
             case 1:
                 gestionClientes();
-                break;                      
+                break;
             case 2:
                 gestionRepartidores();
                 break;
@@ -103,13 +107,13 @@ public class Menu {
                 registrarEntrega();
                 break;
             case 6:
-                
+
                 gestor.deshacerUltimaOperacion();
                 System.out.println("Operación deshecha correctamente.");
                 break;
             case 7:
                 ordenarYListarPedidos();
-                break;  
+                break;
             case 8:
                 buscarPedidoAlgoritmo();
                 break;
@@ -180,10 +184,11 @@ public class Menu {
     }
 
     /**
-     * //* Opción 1: Gestión de clientes (alta, baja, búsqueda y listado ordenado
-     * por código).
+     * /*Opción 1: Gestiona el ABM y consulta de clientesalta, baja, búsqueda y
+     * listado ordenado
+     * por código mediante {@code TreeMap}
      * 
-    
+     * 
      */
 
     private void gestionClientes() throws ClienteNoEncontradoException {
@@ -226,7 +231,7 @@ public class Menu {
      * 
      * 
      */
-    private void gestionRepartidores()   {
+    private void gestionRepartidores() {
         System.out.println("\n--- GESTIÓN DE REPARTIDORES ---");
         System.out.println("1. Registrar repartidor");
         System.out.println("2. Listar repartidores");
@@ -303,11 +308,13 @@ public class Menu {
     }
 
     /**
-     * 4- Atender el siguiente pedido (saca de la cola con prioridad y pone en
-     * camino).
+     * Opción 4: Atiende el siguiente pedido según prioridad (urgentes primero)
+     * y lo asigna al repartidor indicado poniéndolo en camino.
      * 
-     * 
-     * @throws SinpedidosException
+     * @throws SinPedidosPendientesException si no hay pedidos pendientes en las
+     *                                       colas
+     * @throws CapacidadExcedidaException    si el vehículo del repartidor no
+     *                                       soporta el pedido
      */
     private void atenderSiguientePedido() throws SinPedidosPendientesException, CapacidadExcedidaException {
         System.out.println("\n--- Atender Siguiente Pedido ---");
@@ -332,15 +339,9 @@ public class Menu {
     }
 
     /**
-     * Opción 6: Busca un cliente por su código único o por su nombre.
-     * 
-     * @throws ClienteNoEncontradoException si el cliente no es hallado en el
-     *                                      sistema
-     */
-   
-
-    /**
-     * Opción 7: ordenar y listar pedidos eligiendo criterio y algoritmo.
+     * Opción 7: Ordena y lista los pedidos utilizando el criterio (costo, distancia
+     * o fecha)
+     * y el algoritmo de ordenamiento (Burbuja o Inserción) elegidos por el usuario.
      */
     private void ordenarYListarPedidos() {
         System.out.println("\n--- Ordenar y Listar Pedidos ---");
@@ -380,6 +381,7 @@ public class Menu {
 
     /**
      * Opción 8: Buscar un pedido por código (Lineal o Binaria).
+     * (ordenando previamente una copia de la lista por código).
      */
     private void buscarPedidoAlgoritmo() {
         System.out.println("\n--- Buscar Pedido ---");
@@ -410,7 +412,8 @@ public class Menu {
     }
 
     /**
-     * Opción 9: Intercalar los pedidos de dos turnos.
+     * Opción 9: Divide los pedidos registrados en dos turnos ordenados por código
+     * y los combina en una única lista ordenada mediante intercalación.
      */
     private void intercalarPedidosTurnos() {
         System.out.println("\n--- Intercalar Pedidos de Dos Turnos ---");
